@@ -222,14 +222,14 @@
   <div class="container-pro">
     <div class="hero-tag">
       <i class="fas fa-bolt"></i>
-      <span>1 Klik Langsung Ekstrak · Tanpa Scroll · Anti-Error</span>
+      <span>Native ZIP Engine · 1 Klik Langsung Ekstrak · Anti-Blokir CSP</span>
     </div>
     <h1>
       Kemas Semua Produk.<br>
       Ke <span class="red">Satu ZIP Rapi.</span>
     </h1>
     <p class="text-justify-center">
-      Tempel link toko Shopee di kolom input, lalu buat tombol ekstraknya. Saat Anda mengeksekusinya di halaman toko, sistem akan melompat instan ke dasar halaman di latar belakang untuk memuat semua produk tanpa perlu Anda gulir manual. Gambar langsung diproses melalui proxy server menjadi PNG, menjamin 0 error CORS, lalu dikemas ke dalam ZIP dengan penamaan persis sesuai link afiliasi pembeliannya.
+      Tempel link toko Shopee di kolom input, lalu buat tombol ekstraknya. Saat dieksekusi, sistem akan memuat semua produk di toko tersebut secara instan tanpa perlu Anda gulir manual. Gambar diproses melalui proxy cerdas dan dikemas menggunakan mesin ZIP bawaan (tanpa library eksternal), menjamin 0 error CORS maupun CSP, dengan penamaan file PNG persis sesuai link afiliasi pembeliannya.
     </p>
 
     <div class="input-card">
@@ -257,7 +257,7 @@
       <div class="exec-card">
         <div class="exec-title">Cara Eksekusi (1 Klik Tanpa Error)</div>
         <p class="exec-sub">
-          Tool ini dirancang untuk mengambil semua produk di toko hanya dengan 1 klik eksekusi, tanpa perlu repot menggulir halaman secara manual. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP.
+          Tool ini menggunakan mesin ZIP bawaan murni JavaScript, sehingga bisa menembus sistem keamanan CSP Shopee yang memblokir library eksternal. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP.
         </p>
         
         <a id="bookmarkletLink" href="#" class="bookmarklet-btn" draggable="true">
@@ -308,8 +308,8 @@
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
           <i class="fas fa-bolt"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Instant Load (1 Klik)</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Tidak perlu menggulir manual. Sistem melompat ke dasar halaman secara instan di latar belakang untuk memuat semua produk hanya dalam hitungan detik.</p>
+        <h3 class="font-bold text-base mb-2">Native ZIP Engine (Anti-CSP)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Tidak lagi menggunakan library JSZip eksternal yang diblokir Shopee. Mesin ZIP ditulis murni dengan JavaScript dasar, menjamin eksekusi 1 klik tanpa terhenti error CSP.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
@@ -391,7 +391,7 @@ function generateTool() {
 
   document.getElementById('storeLink').href = url;
   
-  // Bookmarklet: Instant Load + Direct Proxy PNG Fetch (Anti Error Canvas)
+  // Kode Bookmarklet: Native ZIP Builder + Proxy Image Fetch (Tanpa Library Eksternal)
   const bookmarkletCode = `
     (function() {
       if (window.__affProRunning) {
@@ -403,7 +403,6 @@ function generateTool() {
       var parts = path.split('/').filter(Boolean);
       var shopName = parts[0];
 
-      // Cek apakah sedang di halaman "Semua Produk" (/all_products)
       if (parts.length < 2 || parts[1] !== 'all_products') {
         alert('Sistem akan mengarahkan Anda ke halaman SEMUA PRODUK toko ini.\\nSetelah halaman termuat, SILAKAN KLIK LAGI tombol "Ekstrak Shopee" di Bookmark Bar Anda.');
         window.location.href = 'https://shopee.co.id/' + shopName + '/all_products';
@@ -423,46 +422,116 @@ function generateTool() {
         if(txt) txt.innerText = text;
       };
 
-      function loadScript(url) {
+      // --- NATIVE ZIP ENGINE START ---
+      function u32(val) { return new Uint8Array([val & 255, (val >>> 8) & 255, (val >>> 16) & 255, (val >>> 24) & 255]); }
+      function u16(val) { return new Uint8Array([val & 255, (val >>> 8) & 255]); }
+      function strToUint8(str) {
+        var arr = [];
+        for (var i = 0; i < str.length; i++) {
+          var c = str.charCodeAt(i);
+          if (c < 128) arr.push(c);
+          else if (c < 2048) arr.push(192 | (c >> 6), 128 | (c & 63));
+          else arr.push(224 | (c >> 12), 128 | ((c >> 6) & 63), 128 | (c & 63));
+        }
+        return new Uint8Array(arr);
+      }
+      function crc32(data) {
+        var crc = ~0;
+        for (var i = 0; i < data.length; i++) {
+          crc ^= data[i];
+          for (var j = 0; j < 8; j++) {
+            crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+          }
+        }
+        return ~crc >>> 0;
+      }
+      function createZip(files) {
+        var offset = 0, centralDir = [], fileData = [];
+        for (var i = 0; i < files.length; i++) {
+          var name = strToUint8(files[i].name);
+          var data = files[i].data;
+          var crc = crc32(data);
+          var size = data.length;
+          
+          var localHeader = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          localHeader.set(u32(crc), 14);
+          localHeader.set(u32(size), 18);
+          localHeader.set(u32(size), 22);
+          localHeader.set(u16(name.length), 26);
+          fileData.push(localHeader, name, data);
+
+          var centralHeader = new Uint8Array([0x50, 0x4b, 0x01, 0x02, 20, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          centralHeader.set(u32(crc), 16);
+          centralHeader.set(u32(size), 20);
+          centralHeader.set(u32(size), 24);
+          centralHeader.set(u16(name.length), 28);
+          centralHeader.set(u32(offset), 42);
+          centralDir.push(centralHeader, name);
+
+          offset += localHeader.length + name.length + data.length;
+        }
+        
+        var centralSize = 0;
+        for (var c of centralDir) centralSize += c.length;
+        var endRecord = new Uint8Array([0x50, 0x4b, 0x05, 0x06, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        endRecord.set(u16(files.length), 8);
+        endRecord.set(u16(files.length), 10);
+        endRecord.set(u32(centralSize), 12);
+        endRecord.set(u32(offset), 16);
+
+        var totalLength = 0;
+        for (var part of [...fileData, ...centralDir, endRecord]) totalLength += part.length;
+        var zipFile = new Uint8Array(totalLength);
+        var pos = 0;
+        for (var part of [...fileData, ...centralDir, endRecord]) {
+          zipFile.set(part, pos);
+          pos += part.length;
+        }
+        return new Blob([zipFile], { type: 'application/zip' });
+      }
+      function blobToUint8(blob) {
         return new Promise((resolve) => {
-          var s = document.createElement('script');
-          s.src = url;
-          s.onload = resolve;
-          document.body.appendChild(s);
+          var fr = new FileReader();
+          fr.onload = function() { resolve(new Uint8Array(fr.result)); };
+          fr.readAsArrayBuffer(blob);
         });
       }
+      // --- NATIVE ZIP ENGINE END ---
 
-      // Sistem Instant Jump (Tanpa Scroll Manual yang Lambat)
       async function instantLoadAll() {
         updateUI(10, 'Melompat ke dasar halaman (Instant Load)...');
-        var lastHeight = 0;
-        var stableCount = 0;
+        var lastHeight = 0, stableCount = 0;
         while(stableCount < 5) {
           window.scrollTo(0, document.body.scrollHeight);
-          await new Promise(r => setTimeout(r, 600)); // Jeda 600ms (sangat cepat)
-          if (document.body.scrollHeight === lastHeight) {
-            stableCount++;
-          } else {
-            stableCount = 0;
-            lastHeight = document.body.scrollHeight;
-          }
+          await new Promise(r => setTimeout(r, 600));
+          if (document.body.scrollHeight === lastHeight) stableCount++;
+          else { stableCount = 0; lastHeight = document.body.scrollHeight; }
         }
         window.scrollTo(0, 0);
       }
 
-      // Sistem Fetch PNG Langsung via Proxy (Menjamin Tanpa Error Canvas)
       async function fetchPngBlob(imageUrl) {
         var cleanUrl = imageUrl.replace(/^https?:\/\//, '');
         var proxyUrl = 'https://wsrv.nl/?url=' + encodeURIComponent(cleanUrl) + '&output=png';
-        try {
-          var res = await fetch(proxyUrl);
-          if(res.ok) return await res.blob();
-        } catch(e) {}
-        return null;
+        return new Promise((resolve) => {
+          var img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth || 600;
+            canvas.height = img.naturalHeight || 600;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(function(b) { resolve(b); }, 'image/png');
+          };
+          img.onerror = function() { resolve(null); };
+          img.src = proxyUrl;
+        });
       }
 
       async function run() {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
         await instantLoadAll();
 
         updateUI(30, 'Memindai SEMUA produk di toko...');
@@ -493,8 +562,7 @@ function generateTool() {
         }
 
         updateUI(40, products.length + ' produk ditemukan! Mengunduh PNG...');
-        var zip = new JSZip();
-        var folder = zip.folder('AFFILIATE_PRO_' + shopName);
+        var files = [];
 
         for (var i = 0; i < products.length; i++) {
           var p = products[i];
@@ -502,23 +570,24 @@ function generateTool() {
             var pngBlob = await fetchPngBlob(p.image);
             if(pngBlob) {
               var fileName = p.link.replace(/^https?:\\/\\//, '').replace(/[^a-zA-Z0-9.-]/g, '_').substring(0, 100);
-              folder.file((i + 1) + '_' + fileName + '.png', pngBlob);
+              var uint8Data = await blobToUint8(pngBlob);
+              files.push({ name: (i + 1) + '_' + fileName + '.png', data: uint8Data });
             }
           }
           var progress = 40 + Math.round((i / products.length) * 50);
           updateUI(progress, 'Memproses ' + (i + 1) + '/' + products.length);
         }
 
-        updateUI(90, 'Membuat file ZIP...');
-        var content = await zip.generateAsync({type: 'blob', compression: 'DEFLATE'});
+        updateUI(90, 'Membuat file ZIP (Native Engine)...');
+        var zipBlob = createZip(files);
         var a = document.createElement('a');
-        a.href = URL.createObjectURL(content);
+        a.href = URL.createObjectURL(zipBlob);
         a.download = 'Affiliate_Pro_' + shopName + '.zip';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
-        updateUI(100, 'Selesai! ' + products.length + ' produk dikemas ke ZIP.');
+        updateUI(100, 'Selesai! ' + files.length + ' produk dikemas ke ZIP.');
         setTimeout(function() { div.remove(); window.__affProRunning = false; }, 5000);
       }
 
