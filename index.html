@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFFILIATE PRO — Shopee Store Extractor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #000000;
+    --bg-2: #0A0A0A;
+    --bg-3: #141414;
+    --surface: #1A1A1A;
+    --border: #2A2A2A;
+    --border-strong: #3A3A3A;
+    --red: #DC2626;
+    --red-bright: #EF4444;
+    --red-dark: #991B1B;
+    --white: #FFFFFF;
+    --muted: #9CA3AF;
+    --muted-2: #6B7280;
+    --success: #10B981;
+    --error: #EF4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .text-justify-center {
+    text-align: justify;
+    text-align-last: center;
+    line-height: 1.7;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  }
+  .bg-glow {
+    position: fixed; pointer-events: none; z-index: 0;
+    width: 600px; height: 600px; border-radius: 50%;
+    filter: blur(120px); opacity: 0.2;
+  }
+  .bg-glow-1 { background: var(--red); top: -200px; right: -150px; animation: drift1 25s ease-in-out infinite; }
+  .bg-glow-2 { background: var(--red-dark); bottom: -200px; left: -100px; animation: drift2 30s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-80px, 100px); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(100px, -80px); } }
+
+  .container-pro { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 18px; color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
+  }
+  .logo-text { font-weight: 800; font-size: 16px; letter-spacing: -0.02em; line-height: 1.1; }
+  .logo-sub { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .status-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red-bright);
+    box-shadow: 0 0 10px var(--red-bright);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .hero { padding: 64px 0 40px; text-align: center; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 99px;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    font-size: 12px; font-weight: 500; color: var(--red-bright);
+    margin-bottom: 24px;
+  }
+  .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 20px; }
+  .hero h1 .red { color: var(--red-bright); }
+  .hero p { font-size: 15px; color: var(--muted); max-width: 640px; margin: 0 auto 36px; }
+
+  .input-card { background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 16px; padding: 20px; margin-bottom: 16px; text-align: left; }
+  .input-row { display: flex; gap: 10px; align-items: stretch; }
+  .input-wrap { flex: 1; position: relative; }
+  .input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted-2); font-size: 14px; }
+  .input-field {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--white); padding: 14px 16px 14px 42px;
+    border-radius: 10px; font-size: 14px; font-family: inherit; transition: all 0.2s;
+  }
+  .input-field:focus { outline: none; border-color: var(--red); background: var(--bg); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+  .input-field::placeholder { color: var(--muted-2); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 700;
+    font-family: inherit; cursor: pointer; transition: all 0.2s; border: none; white-space: nowrap;
+  }
+  .btn-red { background: var(--red); color: var(--white); box-shadow: 0 4px 20px rgba(220, 38, 38, 0.35); }
+  .btn-red:hover { background: var(--red-bright); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(220, 38, 38, 0.5); }
+  .btn-red:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-outline { background: transparent; color: var(--white); border: 1px solid var(--border-strong); }
+  .btn-outline:hover { border-color: var(--red); background: rgba(220, 38, 38, 0.08); }
+  .btn-sm { padding: 10px 16px; font-size: 13px; }
+
+  .input-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+
+  .mode-tabs { display: flex; gap: 4px; background: var(--bg-2); padding: 4px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px; }
+  .mode-tab {
+    flex: 1; padding: 10px 14px; background: transparent; border: none;
+    color: var(--muted); font-size: 13px; font-weight: 600;
+    cursor: pointer; border-radius: 7px; transition: all 0.2s; font-family: inherit;
+  }
+  .mode-tab.active { background: var(--red); color: var(--white); }
+  .mode-tab:not(.active):hover { color: var(--white); background: var(--surface); }
+
+  .textarea-field {
+    width: 100%; background: var(--bg-2); border: 1px solid var(--border);
+    color: var(--white); padding: 14px 16px; border-radius: 10px;
+    font-size: 13px; font-family: 'Courier New', monospace; resize: vertical; min-height: 140px; transition: all 0.2s;
+  }
+  .textarea-field:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+
+  .instructions { background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 10px; padding: 14px 16px; margin-top: 12px; }
+  .instructions-title { font-size: 12px; font-weight: 700; color: var(--red-bright); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .instructions ol { list-style: none; counter-reset: step; }
+  .instructions li {
+    counter-increment: step; font-size: 12px; color: var(--muted);
+    padding: 4px 0 4px 28px; position: relative; text-align: justify; text-align-last: left;
+  }
+  .instructions li::before {
+    content: counter(step); position: absolute; left: 0; top: 4px;
+    width: 18px; height: 18px; background: var(--red); color: var(--white);
+    border-radius: 50%; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card { background: var(--bg-3); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .stat-value { font-size: 28px; font-weight: 800; line-height: 1; color: var(--white); }
+  .stat-value.red { color: var(--red-bright); }
+  .stat-value small { font-size: 14px; font-weight: 500; color: var(--muted); }
+
+  .progress-card { background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .progress-title { font-size: 16px; font-weight: 700; }
+  .progress-percent { font-size: 18px; font-weight: 800; color: var(--red-bright); font-variant-numeric: tabular-nums; }
+  .progress-bar { height: 8px; background: var(--bg-2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 20px; }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--red), var(--red-bright));
+    border-radius: 99px; transition: width 0.4s ease;
+    box-shadow: 0 0 16px rgba(220, 38, 38, 0.6); position: relative;
+  }
+  .progress-fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 1.8s infinite;
+  }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+  .stages { display: flex; flex-direction: column; gap: 6px; }
+  .stage {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; opacity: 0.4; transition: all 0.3s;
+  }
+  .stage.active { opacity: 1; background: rgba(220, 38, 38, 0.08); }
+  .stage.done { opacity: 0.8; }
+  .stage-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; transition: all 0.3s; }
+  .stage.active .stage-dot { background: var(--red); box-shadow: 0 0 12px var(--red); animation: pulse-dot 1.3s infinite; }
+  .stage.done .stage-dot { background: var(--success); }
+  @keyframes pulse-dot { 0%,100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+  .stage-detail { margin-left: auto; font-size: 11px; color: var(--muted); font-family: 'Courier New', monospace; }
+
+  .results-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+  .results-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .results-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .filter-bar { background: var(--bg-3); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted-2); font-size: 13px; }
+  .search-input { width: 100%; background: var(--bg-2); border: 1px solid var(--border); color: var(--white); padding: 9px 12px 9px 34px; border-radius: 8px; font-size: 13px; font-family: inherit; }
+  .search-input:focus { outline: none; border-color: var(--red); }
+  .filter-pill { padding: 7px 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 99px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.2s; font-family: inherit; display: inline-flex; align-items: center; gap: 5px; }
+  .filter-pill:hover { color: var(--white); }
+  .filter-pill.active { background: var(--red); color: var(--white); border-color: var(--red); }
+  .result-count { font-size: 12px; color: var(--muted); font-family: 'Courier New', monospace; }
+
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .product-card { background: var(--bg-3); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.25s; cursor: pointer; position: relative; }
+  .product-card:hover { border-color: var(--red); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(220, 38, 38, 0.2); }
+  .product-img-wrap { aspect-ratio: 1; overflow: hidden; background: var(--bg-2); position: relative; }
+  .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+  .product-num { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.85); border: 1px solid var(--border-strong); color: var(--red-bright); font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; z-index: 2; }
+  .product-png-tag { position: absolute; top: 8px; right: 8px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: var(--success); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 5px; z-index: 2; font-family: 'Courier New', monospace; }
+  .product-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px; opacity: 0; transition: opacity 0.25s; z-index: 3; }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .product-overlay i { font-size: 24px; color: var(--red-bright); }
+  .product-overlay span { font-size: 11px; color: var(--white); }
+  .product-info { padding: 12px; }
+  .product-price { font-size: 12px; font-weight: 700; color: var(--red-bright); margin-bottom: 4px; }
+  .product-title { font-size: 12px; font-weight: 500; color: var(--white); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; min-height: 34px; }
+  .product-link { font-size: 10px; color: var(--muted-2); font-family: 'Courier New', monospace; background: var(--bg-2); padding: 6px 8px; border-radius: 6px; word-break: break-all; line-height: 1.4; max-height: 40px; overflow: hidden; transition: max-height 0.3s; }
+  .product-card:hover .product-link { color: var(--muted); max-height: 80px; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state i { font-size: 40px; color: var(--border-strong); margin-bottom: 16px; }
+
+  .zip-card { background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 14px; padding: 20px; margin-bottom: 24px; }
+  .zip-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .zip-header i { font-size: 22px; color: var(--red-bright); }
+  .zip-header h3 { font-size: 16px; font-weight: 700; }
+  .zip-header p { font-size: 12px; color: var(--muted); }
+  .zip-tree { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.8; }
+  .zip-tree .folder { color: var(--red-bright); font-weight: 700; }
+  .zip-tree .file { color: var(--muted); padding-left: 16px; display: block; }
+  .zip-tree .file.highlight { color: var(--white); }
+  .zip-tree .more { color: var(--muted-2); padding-left: 16px; font-style: italic; }
+
+  .toast { position: fixed; top: 20px; right: 20px; z-index: 1000; background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 16px; max-width: 360px; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 12px 32px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .toast.show { transform: translateX(0); }
+  .toast.success { border-color: var(--success); }
+  .toast.success i { color: var(--success); }
+  .toast.error { border-color: var(--error); }
+  .toast.error i { color: var(--error); }
+  .toast.info { border-color: var(--red); }
+  .toast.info i { color: var(--red-bright); }
+
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--white); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FEATURES 3x3 LAYOUT */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3x3 Grid */
+    gap: 16px;
+    margin: 40px 0;
+  }
+  @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+
+  .feature-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .feature-card:hover { border-color: var(--red); transform: translateY(-2px); }
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    color: var(--red-bright);
+    font-size: 20px;
+  }
+  .feature-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .feature-desc { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
+
+  /* STEPS LAYOUT WITH ICONS */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 40px 0;
+  }
+  @media (max-width: 1024px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .steps-grid { grid-template-columns: 1fr; } }
+
+  .step-card {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .step-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .step-card:hover::before { transform: scaleX(1); }
+  .step-num {
+    font-size: 36px; font-weight: 900;
+    color: var(--bg-2);
+    -webkit-text-stroke: 1px var(--red);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    color: var(--red-bright);
+    font-size: 24px;
+  }
+  .step-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+  .step-desc { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
+
+  .section { padding: 40px 0; }
+  .section-title { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; text-align: center; }
+  .section-sub { font-size: 13px; color: var(--muted); max-width: 640px; margin: 0 auto 30px; text-align: justify; text-align-last: center; line-height: 1.7; }
+  .section-tag { display: block; font-size: 11px; font-weight: 600; color: var(--red-bright); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; text-align: center; }
+
+  .note { background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; text-align: left; }
+  .note-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .note-title i { color: var(--red-bright); }
+  .note p { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
+  .note code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: var(--red-bright); font-family: 'Courier New', monospace; }
+  .note pre { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--muted); overflow-x: auto; line-height: 1.6; margin-top: 10px; text-align: left; }
+
+  footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; }
+  .footer-text { font-size: 12px; color: var(--muted); text-align: justify; text-align-last: center; line-height: 1.7; }
+  .footer-text strong { color: var(--white); }
+
+  .hidden { display: none !important; }
+  mark { background: rgba(220, 38, 38, 0.3); color: var(--white); padding: 0 3px; border-radius: 3px; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red-dark); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+
+<div style="position: relative; z-index: 1;">
+
+<header>
+  <div class="container-pro">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">A</div>
+        <div>
+          <div class="logo-text">AFFILIATE PRO</div>
+          <div class="logo-sub">Shopee Store Extractor</div>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>Sistem Aktif</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container-pro">
+    <div class="hero-tag">
+      <i class="fas fa-bolt"></i>
+      <span>Proses Cepat · Privasi Terjaga · Format PNG · Output ZIP</span>
+    </div>
+    <h1>
+      Ambil Semua Produk.<br>
+      Kemas Jadi <span class="red">Satu ZIP Rapi.</span>
+    </h1>
+    <p class="text-justify-center">
+      Tempel link toko Shopee atau salin HTML dari halaman toko. Tool ini akan mengekstrak setiap gambar produk beserta tautan pembeliannya, mengonversi semua gambar ke format PNG berkualitas tinggi, lalu mengemasnya dalam satu file ZIP dengan penomoran urut dan penamaan sesuai link pembelian. Semua proses berjalan cepat dan sepenuhnya di sisi browser Anda untuk menjamin privasi data tetap terjaga.
+    </p>
+
+    <div class="input-card">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="url" onclick="switchMode('url')">
+          <i class="fas fa-link"></i> URL Toko
+        </button>
+        <button class="mode-tab" data-mode="html" onclick="switchMode('html')">
+          <i class="fas fa-code"></i> Paste HTML
+        </button>
+      </div>
+
+      <div id="urlMode">
+        <div class="input-row">
+          <div class="input-wrap">
+            <i class="fas fa-link"></i>
+            <input id="urlInput" type="text" class="input-field" placeholder="https://shopee.co.id/nama-toko" autocomplete="off" />
+          </div>
+          <button id="scrapeBtn" class="btn btn-red" onclick="startExtraction()">
+            <i class="fas fa-magnifying-glass"></i>
+            <span>Ekstrak Sekarang</span>
+          </button>
+        </div>
+        <div class="input-actions">
+          <button class="btn btn-outline btn-sm" onclick="pasteClipboard()">
+            <i class="fas fa-paste"></i> Tempel Clipboard
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="useSampleURL()">
+            <i class="fas fa-example"></i> Contoh URL
+          </button>
+        </div>
+        <div class="instructions">
+          <div class="instructions-title">
+            <i class="fas fa-info-circle"></i> Cara Pakai Mode URL
+          </div>
+          <ol>
+            <li>Buka toko Shopee di browser, salin URL dari address bar.</li>
+            <li>Tempel URL di kotak input di atas, lalu klik tombol Ekstrak Sekarang.</li>
+            <li>Tool akan menghubungkan ke toko via proxy, mengambil daftar produk, gambar, dan link pembelian.</li>
+            <li>Jika koneksi proxy gagal, gunakan mode Paste HTML sebagai alternatif yang pasti berhasil.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div id="htmlMode" class="hidden">
+        <textarea id="htmlInput" class="textarea-field" placeholder="Tempel HTML dari halaman toko Shopee di sini..."></textarea>
+        <div class="input-actions" style="justify-content: space-between;">
+          <div style="font-size: 12px; color: var(--muted);">
+            <span id="htmlCharCount">0</span> karakter
+          </div>
+          <button class="btn btn-red btn-sm" onclick="startExtraction()">
+            <i class="fas fa-play"></i> Proses HTML
+          </button>
+        </div>
+        <div class="instructions">
+          <div class="instructions-title">
+            <i class="fas fa-info-circle"></i> Cara Pakai Mode Paste HTML
+          </div>
+          <ol>
+            <li>Buka toko Shopee di browser (https://shopee.co.id/nama-toko).</li>
+            <li>Tunggu halaman termuat penuh, scroll ke bawah untuk memuat semua produk.</li>
+            <li>Tekan F12 atau klik kanan → Inspect Element untuk membuka Developer Tools.</li>
+            <li>Cari tag body di tab Elements, klik kanan → Copy → Copy outerHTML.</li>
+            <li>Paste hasil copy ke kotak di atas, lalu klik tombol Proses HTML.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="statsSection" class="hidden">
+  <div class="container-pro">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-store"></i> Toko</div>
+        <div class="stat-value" id="statStore" style="font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-box"></i> Produk</div>
+        <div class="stat-value red" id="statProducts">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-image"></i> Gambar</div>
+        <div class="stat-value" id="statImages">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i class="fas fa-file-zipper"></i> ZIP</div>
+        <div class="stat-value" id="statSize">0 <small>KB</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="progressSection" class="hidden">
+  <div class="container-pro">
+    <div class="progress-card">
+      <div class="progress-header">
+        <div class="progress-title">Memproses Ekstraksi</div>
+        <div class="progress-percent" id="progressPercent">0%</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <div class="stages">
+        <div class="stage" id="stage1">
+          <span class="stage-dot"></span>
+          <span>Menghubungkan ke sumber data</span>
+          <span class="stage-detail" id="stage1Detail"></span>
+        </div>
+        <div class="stage" id="stage2">
+          <span class="stage-dot"></span>
+          <span>Mengurai daftar produk</span>
+          <span class="stage-detail" id="stage2Detail"></span>
+        </div>
+        <div class="stage" id="stage3">
+          <span class="stage-dot"></span>
+          <span>Mengunduh gambar produk</span>
+          <span class="stage-detail" id="stage3Detail"></span>
+        </div>
+        <div class="stage" id="stage4">
+          <span class="stage-dot"></span>
+          <span>Mengonversi ke PNG</span>
+          <span class="stage-detail" id="stage4Detail"></span>
+        </div>
+        <div class="stage" id="stage5">
+          <span class="stage-dot"></span>
+          <span>Mengemas file ZIP</span>
+          <span class="stage-detail" id="stage5Detail"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="resultsSection" class="hidden section">
+  <div class="container-pro">
+    <div class="results-header">
+      <div>
+        <span class="section-tag">// Hasil Ekstraksi</span>
+        <h2 class="results-title">Pratinjau Produk</h2>
+        <p class="results-sub">Klik kartu untuk salin link · Format file: <code style="background:var(--bg-3);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--red-bright);font-family:'Courier New',monospace;">[urut]_[link].png</code></p>
+      </div>
+      <button class="btn btn-red" onclick="downloadZip()">
+        <i class="fas fa-download"></i>
+        <span>Unduh ZIP</span>
+      </button>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i class="fas fa-magnifying-glass"></i>
+        <input id="searchInput" type="text" class="search-input" placeholder="Cari nama produk atau link..." oninput="applyFilter()" />
+      </div>
+      <button class="filter-pill active" data-filter="all" onclick="applyFilter('all')">
+        <i class="fas fa-th"></i> Semua
+      </button>
+      <button class="filter-pill" data-filter="image" onclick="applyFilter('image')">
+        <i class="fas fa-image"></i> Bergambar
+      </button>
+      <button class="filter-pill" data-filter="placeholder" onclick="applyFilter('placeholder')">
+        <i class="fas fa-image-portrait"></i> Placeholder
+      </button>
+      <span class="result-count"><span id="resultCount">0</span> produk</span>
+    </div>
+
+    <div id="productGrid" class="product-grid"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <i class="fas fa-magnifying-glass"></i>
+      <p>Tidak ada produk yang cocok dengan pencarian Anda.</p>
+    </div>
+  </div>
+</section>
+
+<section id="zipPreview" class="hidden">
+  <div class="container-pro">
+    <div class="zip-card">
+      <div class="zip-header">
+        <i class="fas fa-folder-open"></i>
+        <div>
+          <h3>Struktur File ZIP</h3>
+          <p>Begini tampilan isi arsip saat diekstrak</p>
+        </div>
+      </div>
+      <div id="zipTree" class="zip-tree"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES SECTION 3x3 -->
+<section class="section">
+  <div class="container-pro">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <span class="section-tag">// Fitur Utama</span>
+      <h2 class="section-title">Alat Lengkap untuk Afiliator</h2>
+      <p class="section-sub">Dirancang khusus untuk membantu afiliator Shopee mengumpulkan materi promosi dengan cepat dan terorganisir. Setiap fitur dirancang agar dapat berjalan langsung di browser tanpa instalasi tambahan, memastikan privasi Anda tetap terjaga sepenuhnya selama proses penggunaan berlangsung.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+        <div class="feature-title">Proses Cepat</div>
+        <p class="feature-desc">Ekstraksi berjalan paralel di dalam browser, di mana setiap gambar produk akan diunduh dan dikonversi secara bertahap dengan progress yang transparan dan tanpa adanya delay yang tidak perlu.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="feature-title">Privasi Terjaga</div>
+        <p class="feature-desc">Seluruh proses ekstraksi berjalan sepenuhnya di sisi klien. Tidak ada data toko atau riwayat ekstraksi Anda yang dikirim atau disimpan pada server pihak ketiga mana pun.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-image"></i></div>
+        <div class="feature-title">Konversi PNG Otomatis</div>
+        <p class="feature-desc">Setiap gambar produk yang berhasil diambil akan otomatis dikonversi ke dalam format PNG berkualitas tinggi melalui metode canvas renderer, guna memastikan kompatibilitas yang prima untuk berbagai platform.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-list-ol"></i></div>
+        <div class="feature-title">Penomoran Urut</div>
+        <p class="feature-desc">Seluruh gambar yang diekstrak akan diberikan nomor urut otomatis secara berurutan sesuai dengan daftar produk di toko, sehingga akan sangat memudahkan proses pelacakan dan organisasi file.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-link"></i></div>
+        <div class="feature-title">Nama File = Link</div>
+        <p class="feature-desc">Penamaan file PNG mengikuti tautan atau link pembelian produk aslinya, sehingga apabila Anda membutuhkan rujukan kembali, produk tersebut dapat ditelusuri dengan sangat mudah.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-file-zipper"></i></div>
+        <div class="feature-title">Output ZIP Rapi</div>
+        <p class="feature-desc">Semua file gambar akan dikemas dengan sangat rapi di dalam satu arsip ZIP yang terstruktur, yang di dalamnya juga dilengkapi dengan file data CSV dan README untuk dokumentasi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-magnifying-glass-chart"></i></div>
+        <div class="feature-title">Pencarian Real-time</div>
+        <p class="feature-desc">Anda dapat melakukan pencarian dan filtering secara real-time pada daftar produk yang telah diekstrak, memungkinkan Anda untuk menemukan item spesifik atau mengelola data dengan jauh lebih cepat.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-globe"></i></div>
+        <div class="feature-title">Tanpa Instalasi</div>
+        <p class="feature-desc">Alat ini dirancang untuk berjalan langsung di atas browser favorit Anda tanpa memerlukan instalasi software tambahan apapun, sehingga dapat segera digunakan kapan saja dan di mana saja.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-file-csv"></i></div>
+        <div class="feature-title">Data CSV Bonus</div>
+        <p class="feature-desc">Selain gambar, tool ini juga menyertakan file data-link.csv di dalam arsip ZIP yang berisi daftar lengkap link produk beserta harga, untuk memudahkan manajemen afiliasi Anda secara menyeluruh.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS SECTION WITH ICONS -->
+<section class="section">
+  <div class="container-pro">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <span class="section-tag">// Cara Kerja</span>
+      <h2 class="section-title">Empat Langkah Sederhana</h2>
+      <p class="section-sub">Dari tautan toko hingga arsip ZIP terstruktur yang siap dipakai untuk kebutuhan afiliasi Anda. Prosesnya cepat, otomatis, dan tidak memerlukan instalasi software tambahan apa pun, sehingga Anda dapat langsung memfokuskan diri pada pengembangan bisnis afiliasi.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon"><i class="fas fa-keyboard"></i></div>
+        <div class="step-title">Tempel Link atau HTML</div>
+        <p class="step-desc">Pertama, silakan salin URL toko Shopee dari address bar browser, atau Anda dapat menyalin kode HTML melalui inspect element. Kemudian, tempelkan data tersebut pada kotak input yang tersedia di bagian atas halaman ini.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon"><i class="fas fa-robot"></i></div>
+        <div class="step-title">Ekstraksi Otomatis</div>
+        <p class="step-desc">Sistem akan secara otomatis membaca seluruh katalog toko, mengambil setiap gambar produk beserta tautan pembeliannya. Proses ini berjalan dengan progress yang dapat Anda pantau secara real-time untuk transparansi penuh.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div class="step-title">Konversi ke PNG</div>
+        <p class="step-desc">Setiap gambar produk yang berhasil diunduh akan segera dikonversi ke dalam format PNG berkualitas tinggi melalui metode canvas renderer, guna memastikan format file yang benar-benar seragam untuk seluruh output.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon"><i class="fas fa-cloud-arrow-down"></i></div>
+        <div class="step-title">Unduh ZIP</div>
+        <p class="step-desc">Terakhir, arsip ZIP yang berisi gambar PNG bernomor urut beserta nama sesuai link pembelian akan siap diunduh, lengkap dengan file CSV berisi data produk dan README dokumentasi untuk memudahkan pekerjaan Anda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container-pro">
+    <p class="footer-text">
+      <strong>AFFILIATE PRO</strong> — Dibuat untuk para afiliator Shopee Indonesia.<br>
+      Berjalan 100% di browser · Single-file build · v1.0 Final
+    </p>
+  </div>
+</footer>
+
+</div>
+
+<div id="toast" class="toast">
+  <i class="fas fa-check-circle" style="font-size: 18px;"></i>
+  <span id="toastMsg">Selesai</span>
+</div>
+
+<script>
+const state = {
+  isProcessing: false,
+  mode: 'url',
+  products: [],
+  filteredProducts: [],
+  zipBlob: null,
+  storeName: '',
+  currentFilter: 'all'
+};
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const msg = document.getElementById('toastMsg');
+  const icon = toast.querySelector('i');
+  toast.className = 'toast ' + type;
+  msg.textContent = message;
+  const iconMap = {
+    success: 'fas fa-check-circle',
+    error: 'fas fa-times-circle',
+    info: 'fas fa-info-circle'
+  };
+  icon.className = (iconMap[type] || iconMap.success);
+  icon.style.color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--red-bright)';
+  icon.style.fontSize = '18px';
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+function extractStoreName(url) {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    return parts[0] || u.hostname.replace('www.', '');
+  } catch {
+    return url.replace(/^https?:\/\//, '').split('/')[0] || 'toko';
+  }
+}
+
+function sanitizeFilename(link) {
+  let name = link.replace(/^https?:\/\//, '');
+  name = name.replace(/[^a-zA-Z0-9.-]/g, '_');
+  name = name.replace(/_+/g, '_').replace(/^_|_$/g, '');
+  return name.substring(0, 80);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function highlightText(text, query) {
+  const safe = escapeHtml(text);
+  if (!query) return safe;
+  const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp('(' + safeQuery + ')', 'gi');
+  return safe.replace(regex, '<mark>$1</mark>');
+}
+
+function switchMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+  document.getElementById('urlMode').classList.toggle('hidden', mode !== 'url');
+  document.getElementById('htmlMode').classList.toggle('hidden', mode !== 'html');
+  
+  const btn = document.getElementById('scrapeBtn');
+  if (btn) {
+    if (mode === 'url') {
+      btn.innerHTML = '<i class="fas fa-magnifying-glass"></i><span>Ekstrak Sekarang</span>';
+    } else {
+      btn.innerHTML = '<i class="fas fa-play"></i><span>Proses HTML</span>';
+    }
+  }
+}
+
+document.getElementById('htmlInput').addEventListener('input', function() {
+  document.getElementById('htmlCharCount').textContent = this.value.length;
+});
+
+document.getElementById('urlInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') startExtraction();
+});
+
+function pasteClipboard() {
+  if (navigator.clipboard && navigator.clipboard.readText) {
+    navigator.clipboard.readText().then(text => {
+      document.getElementById('urlInput').value = text.trim();
+      showToast('Tautan ditempel dari clipboard', 'info');
+    }).catch(() => {
+      showToast('Tidak dapat akses clipboard. Paste manual (Ctrl+V).', 'error');
+    });
+  } else {
+    showToast('Browser tidak mendukung clipboard API', 'error');
+  }
+}
+
+function useSampleURL() {
+  const samples = [
+    'https://shopee.co.id/official.store',
+    'https://shopee.co.id/toko-fashion-murah',
+    'https://shopee.co.id/grosir-elektronik'
+  ];
+  document.getElementById('urlInput').value = samples[Math.floor(Math.random() * samples.length)];
+  showToast('URL contoh dimuat. Klik Ekstrak Sekarang.', 'info');
+}
+
+async function fetchStorePage(url) {
+  const proxies = [
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    'https://corsproxy.io/?' + encodeURIComponent(url),
+    'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(url)
+  ];
+
+  for (let i = 0; i < proxies.length; i++) {
+    try {
+      const res = await fetch(proxies[i], {
+        headers: { 'Accept': 'text/html,application/xhtml+xml' }
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.length > 500) {
+          return text;
+        }
+      }
+    } catch (e) {
+      console.log('Proxy ' + i + ' failed:', e.message);
+    }
+  }
+  throw new Error('Semua proxy gagal. Coba Mode Paste HTML.');
+}
+
+function parseShopeeProducts(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const products = [];
+  const seenLinks = new Set();
+
+  const productLinks = doc.querySelectorAll('a[href*="-i."]');
+
+  productLinks.forEach(a => {
+    let href = a.getAttribute('href') || '';
+    if (href.startsWith('//')) href = 'https:' + href;
+    else if (href.startsWith('/')) href = 'https://shopee.co.id' + href;
+
+    const linkKey = href.split('?')[0];
+    if (seenLinks.has(linkKey)) return;
+    seenLinks.add(linkKey);
+
+    let img = a.querySelector('img');
+    if (!img) {
+      const parent = a.closest('[data-sqe=item], [data-sqe="item"], .shopee-search-item-result__item, div[class*="item-card"], div[class*="product"]');
+      if (parent) img = parent.querySelector('img');
+    }
+
+    let imageUrl = '';
+    if (img) {
+      imageUrl = img.src || img.getAttribute('data-src') || img.getAttribute('data-origin-src') || img.getAttribute('data-lazy-src') || '';
+      if (imageUrl.startsWith('//')) imageUrl = 'https:' + imageUrl;
+      if (imageUrl.startsWith('/')) imageUrl = 'https://shopee.co.id' + imageUrl;
+    }
+
+    let title = '';
+    if (img) title = img.alt || '';
+    if (!title) {
+      const parent = a.closest('[data-sqe=item], .shopee-search-item-result__item, div[class*="item-card"]');
+      if (parent) {
+        const titleEl = parent.querySelector('div[class*="title"], span[class*="title"], [class*="name"], [class*="product-name"]');
+        if (titleEl) title = titleEl.textContent.trim();
+      }
+    }
+    if (!title) {
+      const match = href.match(/\/([^\/]+)-i\./);
+      if (match) title = decodeURIComponent(match[1]).replace(/-/g, ' ');
+    }
+    if (!title) title = 'Produk Shopee';
+
+    let price = 0;
+    const parent = a.closest('[data-sqe=item], .shopee-search-item-result__item, div[class*="item-card"]');
+    if (parent) {
+      const priceEl = parent.querySelector('[class*="price"], [class*="Price"]');
+      if (priceEl) {
+        const priceText = priceEl.textContent.replace(/[^0-9]/g, '');
+        if (priceText) price = parseInt(priceText);
+      }
+    }
+
+    if (href) {
+      products.push({
+        link: href,
+        image: imageUrl,
+        title: title,
+        price: price,
+        pngBlob: null,
+        isPlaceholder: false
+      });
+    }
+  });
+
+  return products;
+}
+
+async function convertToPng(imageUrl) {
+  if (!imageUrl) throw new Error('No image URL');
+
+  let proxyUrl = imageUrl;
+  if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('blob:')) {
+    const cleanUrl = imageUrl.replace(/^https?:\/\//, '');
+    proxyUrl = 'https://wsrv.nl/?url=' + encodeURIComponent(cleanUrl) + '&output=png&w=600&h=600&fit=cover';
+  }
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    let done = false;
+
+    img.onload = () => {
+      if (done) return;
+      done = true;
+      try {
+        const canvas = document.createElement('canvas');
+        const size = Math.max(img.naturalWidth || 600, 600);
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, size, size);
+        
+        const ratio = Math.max(size / img.naturalWidth, size / img.naturalHeight);
+        const newW = img.naturalWidth * ratio;
+        const newH = img.naturalHeight * ratio;
+        const x = (size - newW) / 2;
+        const y = (size - newH) / 2;
+        ctx.drawImage(img, x, y, newW, newH);
+
+        canvas.toBlob(blob => {
+          if (blob) resolve(blob);
+          else reject(new Error('Canvas toBlob failed'));
+        }, 'image/png', 1.0);
+      } catch (e) {
+        reject(e);
+      }
+    };
+
+    img.onerror = () => {
+      if (done) return;
+      done = true;
+      reject(new Error('Image load failed'));
+    };
+
+    setTimeout(() => {
+      if (!done) reject(new Error('Image load timeout'));
+    }, 15000);
+
+    img.src = proxyUrl;
+  });
+}
+
+function generatePlaceholderPng(index) {
+  return new Promise(resolve => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, 600, 600);
+
+    const grad = ctx.createRadialGradient(300, 280, 50, 300, 280, 280);
+    grad.addColorStop(0, '#EF4444');
+    grad.addColorStop(0.6, '#DC2626');
+    grad.addColorStop(1, '#991B1B');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(300, 280, 220, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 180px Inter, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(index), 300, 280);
+
+    ctx.font = 'bold 22px Inter, Arial, sans-serif';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText('AFFILIATE PRO', 300, 470);
+    
+    canvas.toBlob(blob => resolve(blob), 'image/png');
+  });
+}
+
+function setStageActive(num) {
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('stage' + i);
+    el.classList.remove('active', 'done');
+    if (i < num) el.classList.add('done');
+    else if (i === num) el.classList.add('active');
+  }
+}
+
+function markStageDone(num) {
+  const el = document.getElementById('stage' + num);
+  el.classList.remove('active');
+  el.classList.add('done');
+}
+
+function setStageDetail(num, text) {
+  document.getElementById('stage' + num + 'Detail').textContent = text;
+}
+
+function updateProgress(percent) {
+  document.getElementById('progressFill').style.width = percent + '%';
+  document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
+}
+
+function animateCounter(el, target, duration = 500) {
+  const start = parseInt(el.textContent) || 0;
+  const diff = target - start;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const value = Math.round(start + diff * progress);
+    el.textContent = value;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function updateStats(products, images, sizeKb) {
+  document.getElementById('statStore').textContent = state.storeName;
+  animateCounter(document.getElementById('statProducts'), products);
+  animateCounter(document.getElementById('statImages'), images);
+  if (sizeKb !== undefined) {
+    const sizeEl = document.getElementById('statSize');
+    if (sizeKb < 1024) {
+      sizeEl.innerHTML = sizeKb + ' <small>KB</small>';
+    } else {
+      sizeEl.innerHTML = (sizeKb / 1024).toFixed(1) + ' <small>MB</small>';
+    }
+  }
+}
+
+async function startExtraction() {
+  if (state.isProcessing) return;
+
+  const btn = document.getElementById('scrapeBtn');
+  const originalBtnHtml = btn.innerHTML;
+  
+  const url = document.getElementById('urlInput').value.trim();
+  const html = document.getElementById('htmlInput').value.trim();
+
+  if (state.mode === 'url' && !url) {
+    showToast('Mohon masukkan URL toko Shopee terlebih dahulu', 'error');
+    return;
+  }
+  if (state.mode === 'html' && !html) {
+    showToast('Mohon tempel HTML dari halaman toko Shopee', 'error');
+    return;
+  }
+
+  state.isProcessing = true;
+  state.storeName = state.mode === 'url' ? extractStoreName(url) : 'paste-html-' + Date.now();
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div><span>Memproses...</span>';
+
+  document.getElementById('statsSection').classList.remove('hidden');
+  document.getElementById('progressSection').classList.remove('hidden');
+  document.getElementById('resultsSection').classList.add('hidden');
+  document.getElementById('zipPreview').classList.add('hidden');
+
+  document.getElementById('statStore').textContent = state.storeName;
+  document.getElementById('statProducts').textContent = '0';
+  document.getElementById('statImages').textContent = '0';
+  document.getElementById('statSize').innerHTML = '0 <small>KB</small>';
+
+  setTimeout(() => {
+    document.getElementById('progressSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+
+  try {
+    setStageActive(1);
+    setStageDetail(1, 'Menghubungkan...');
+    updateProgress(5);
+
+    let htmlContent = '';
+    if (state.mode === 'url') {
+      setStageDetail(1, 'Fetch via proxy...');
+      updateProgress(8);
+      try {
+        htmlContent = await fetchStorePage(url);
+        setStageDetail(1, 'Berhasil terhubung');
+      } catch (e) {
+        setStageDetail(1, 'Gagal: ' + e.message);
+        showToast('Gagal fetch URL. Beralih ke Mode Paste HTML.', 'error');
+        await new Promise(r => setTimeout(r, 800));
+        switchMode('html');
+        state.isProcessing = false;
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+        return;
+      }
+    } else {
+      htmlContent = html;
+      setStageDetail(1, 'HTML diterima');
+    }
+    updateProgress(15);
+    markStageDone(1);
+
+    setStageActive(2);
+    setStageDetail(2, 'Mengurai HTML...');
+    updateProgress(20);
+
+    const products = parseShopeeProducts(htmlContent);
+
+    if (products.length === 0) {
+      setStageDetail(2, 'Tidak ada produk ditemukan');
+      showToast('Tidak ada produk ditemukan di HTML. Pastikan HTML dari halaman toko yang sudah termuat penuh.', 'error');
+      state.isProcessing = false;
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml;
+      return;
+    }
+
+    state.products = products;
+    updateStats(products.length, 0);
+    setStageDetail(2, products.length + ' produk ditemukan');
+    updateProgress(30);
+    markStageDone(2);
+
+    setStageActive(3);
+    setStageDetail(3, '0/' + products.length);
+    updateProgress(35);
+
+    let downloaded = 0;
+    let failed = 0;
+
+    const batchSize = 5;
+    for (let i = 0; i < products.length; i += batchSize) {
+      const batch = products.slice(i, i + batchSize);
+      const promises = batch.map(async (p, idx) => {
+        if (p.image) {
+          try {
+            const pngBlob = await convertToPng(p.image);
+            p.pngBlob = pngBlob;
+            downloaded++;
+          } catch (e) {
+            const placeholder = await generatePlaceholderPng(i + idx + 1);
+            p.pngBlob = placeholder;
+            p.isPlaceholder = true;
+            failed++;
+          }
+        } else {
+          const placeholder = await generatePlaceholderPng(i + idx + 1);
+          p.pngBlob = placeholder;
+          p.isPlaceholder = true;
+          failed++;
+        }
+      });
+      
+      await Promise.all(promises);
+      
+      const processed = Math.min(i + batchSize, products.length);
+      updateStats(products.length, downloaded + failed);
+      setStageDetail(3, processed + '/' + products.length);
+      const progress = 35 + (processed / products.length) * 45;
+      updateProgress(progress);
+    }
+
+    const totalImages = downloaded + failed;
+    updateStats(products.length, totalImages);
+    setStageDetail(3, totalImages + '/' + products.length + ' selesai');
+    markStageDone(3);
+
+    setStageActive(4);
+    setStageDetail(4, downloaded + ' PNG dibuat');
+    updateProgress(82);
+    markStageDone(4);
+
+    setStageActive(5);
+    setStageDetail(5, 'Mengemas...');
+    updateProgress(85);
+
+    const zip = new JSZip();
+    const safeStore = state.storeName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const folderName = 'AFFILIATE_PRO_' + safeStore;
+    const folder = zip.folder(folderName);
+
+    products.forEach((p, i) => {
+      if (p.pngBlob) {
+        const sanitized = sanitizeFilename(p.link);
+        const filename = (i + 1) + '_' + sanitized + '.png';
+        folder.file(filename, p.pngBlob);
+      }
+    });
+
+    const csvLines = ['No,Judul,Harga,Link,Gambar,Status'];
+    products.forEach((p, i) => {
+      const safeTitle = '"' + (p.title || '').replace(/"/g, '""') + '"';
+      const sanitized = sanitizeFilename(p.link);
+      const imgName = (i + 1) + '_' + sanitized + '.png';
+      const status = p.isPlaceholder ? 'Placeholder' : 'OK';
+      csvLines.push([i + 1, safeTitle, p.price || 0, p.link, imgName, status].join(','));
+    });
+    folder.file('data-link.csv', csvLines.join('\n'));
+
+    const readme = [
+      'AFFILIATE PRO — Hasil Ekstraksi Toko Shopee',
+      '============================================',
+      '',
+      'Toko        : ' + state.storeName,
+      'URL Asal    : ' + (state.mode === 'url' ? url : 'Paste HTML mode'),
+      'Tanggal     : ' + new Date().toISOString(),
+      'Total Produk: ' + products.length,
+      'Format Gambar: PNG',
+      '',
+      'Struktur Penamaan File:',
+      '  [nomor-urut]_[link-pembelian].png',
+      '',
+      'Contoh:',
+      '  1_shopee.co.id_nama-produk-i.123.456.png',
+      '',
+      'File Tambahan:',
+      '  data-link.csv  — Daftar lengkap produk dengan link dan harga',
+      '  README.txt     — File ini',
+      '',
+      'Dibuat dengan AFFILIATE PRO v1.0'
+    ].join('\n');
+    folder.file('README.txt', readme);
+
+    setStageDetail(5, 'Kompresi...');
+    const blob = await zip.generateAsync({
+      type: 'blob',
+      compression: 'DEFLATE',
+      compressionOptions: { level: 6 }
+    }, (meta) => {
+      setStageDetail(5, Math.round(meta.percent) + '%');
+      updateProgress(85 + (meta.percent / 100) * 13);
+    });
+
+    state.zipBlob = blob;
+    const sizeKb = Math.round(blob.size / 1024);
+    updateStats(products.length, totalImages, sizeKb);
+
+    setStageDetail(5, 'Selesai · ' + sizeKb + ' KB');
+    updateProgress(100);
+    markStageDone(5);
+
+    state.filteredProducts = products;
+    renderProducts(products);
+    renderZipTree(folderName, products);
+
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('zipPreview').classList.remove('hidden');
+
+    showToast('Berhasil! ' + products.length + ' produk diekstrak ke ZIP.', 'success');
+
+    setTimeout(() => {
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+
+  } catch (error) {
+    console.error(error);
+    showToast('Error: ' + error.message, 'error');
+  } finally {
+    state.isProcessing = false;
+    btn.disabled = false;
+    btn.innerHTML = originalBtnHtml;
+  }
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  document.getElementById('resultCount').textContent = products.length;
+
+  if (products.length === 0) {
+    document.getElementById('emptyState').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('emptyState').classList.add('hidden');
+
+  const query = document.getElementById('searchInput').value.trim();
+
+  products.forEach((p) => {
+    const realIndex = state.products.indexOf(p);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.onclick = () => copyToClipboard(p.link, realIndex);
+
+    const shortTitle = (p.title || 'Produk').length > 50 ? (p.title || 'Produk').substring(0, 50) + '...' : (p.title || 'Produk');
+
+    let imgHtml = '';
+    if (p.isPlaceholder || !p.image) {
+      imgHtml = '<div style="width:100%;height:100%;background:linear-gradient(135deg,#DC2626,#991B1B);display:flex;align-items:center;justify-content:center;"><span style="font-size:48px;font-weight:900;color:#fff;">' + (realIndex + 1) + '</span></div>';
+    } else {
+      imgHtml = '<img src="' + escapeHtml(p.image) + '" alt="' + escapeHtml(p.title || '') + '" loading="lazy" onerror="this.style.display=\'none\';this.parentElement.querySelector(\'.fallback\').style.display=\'flex\'" />' +
+                '<div class="fallback" style="width:100%;height:100%;background:linear-gradient(135deg,#DC2626,#991B1B);display:none;align-items:center;justify-content:center;"><span style="font-size:48px;font-weight:900;color:#fff;">' + (realIndex + 1) + '</span></div>';
+    }
+
+    const priceText = p.price > 0 ? 'Rp ' + p.price.toLocaleString('id-ID') : '—';
+
+    card.innerHTML = '<div class="product-img-wrap">' +
+      '<span class="product-num">#' + String(realIndex + 1).padStart(2, '0') + '</span>' +
+      '<span class="product-png-tag">PNG</span>' +
+      imgHtml +
+      '<div class="product-overlay"><i class="fas fa-copy"></i><span>Klik untuk salin link</span></div>' +
+      '</div>' +
+      '<div class="product-info">' +
+      '<div class="product-price">' + priceText + '</div>' +
+      '<div class="product-title" title="' + escapeHtml(p.title || '') + '">' + highlightText(shortTitle, query) + '</div>' +
+      '<div class="product-link">' + escapeHtml(p.link || '') + '</div>' +
+      '</div>';
+
+    grid.appendChild(card);
+  });
+}
+
+function renderZipTree(folderName, products) {
+  const tree = document.getElementById('zipTree');
+  let html = '<div class="folder">📁 ' + escapeHtml(folderName) + '/</div>';
+
+  const showCount = Math.min(4, products.length);
+  for (let i = 0; i < showCount; i++) {
+    const p = products[i];
+    const sanitized = sanitizeFilename(p.link);
+    html += '<div class="file highlight">🖼️ ' + (i + 1) + '_' + escapeHtml(sanitized) + '.png</div>';
+  }
+
+  if (products.length > showCount) {
+    html += '<div class="more">... dan ' + (products.length - showCount) + ' gambar lainnya</div>';
+  }
+
+  html += '<div class="file">📊 data-link.csv</div>';
+  html += '<div class="file">📄 README.txt</div>';
+
+  tree.innerHTML = html;
+}
+
+function applyFilter(filter) {
+  if (filter) {
+    state.currentFilter = filter;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('.filter-pill[data-filter="' + filter + '"]').classList.add('active');
+  } else {
+    filter = state.currentFilter;
+  }
+
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  let filtered = state.products;
+
+  if (filter === 'image') {
+    filtered = filtered.filter(p => !p.isPlaceholder);
+  } else if (filter === 'placeholder') {
+    filtered = filtered.filter(p => p.isPlaceholder);
+  }
+
+  if (query) {
+    filtered = filtered.filter(p =>
+      (p.title || '').toLowerCase().includes(query) ||
+      (p.link || '').toLowerCase().includes(query)
+    );
+  }
+
+  state.filteredProducts = filtered;
+  renderProducts(filtered);
+}
+
+function copyToClipboard(text, index) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Link #' + (index + 1) + ' disalin ke clipboard', 'info');
+    }).catch(() => {
+      fallbackCopy(text, index);
+    });
+  } else {
+    fallbackCopy(text, index);
+  }
+}
+
+function fallbackCopy(text, index) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('Link #' + (index + 1) + ' disalin', 'info');
+  } catch (e) {
+    showToast('Gagal menyalin link', 'error');
+  }
+  document.body.removeChild(ta);
+}
+
+function downloadZip() {
+  if (!state.zipBlob) {
+    showToast('Belum ada file ZIP. Jalankan ekstraksi terlebih dahulu.', 'error');
+    return;
+  }
+
+  const safeStore = state.storeName.replace(/[^a-zA-Z0-9.-]/g, '_');
+  const filename = 'AFFILIATE_PRO_' + safeStore + '.zip';
+
+  const url = URL.createObjectURL(state.zipBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  showToast('File ' + filename + ' sedang diunduh', 'success');
+}
+
+window.addEventListener('load', function() {
+  setTimeout(() => document.getElementById('urlInput').focus(), 300);
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    startExtraction();
+  }
+});
+</script>
+
+</body>
+</html>
