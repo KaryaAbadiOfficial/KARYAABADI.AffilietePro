@@ -76,26 +76,20 @@
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
   }
-  .header-inner {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0;
-  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
   .logo { display: flex; align-items: center; gap: 12px; }
   .logo-mark {
-    width: 38px; height: 38px;
-    background: var(--red);
+    width: 38px; height: 38px; background: var(--red);
     display: flex; align-items: center; justify-content: center;
     font-weight: 900; font-size: 18px; color: var(--white);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
+    border-radius: 8px; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
   }
   .logo-text { font-weight: 800; font-size: 16px; letter-spacing: -0.02em; line-height: 1.1; }
   .logo-sub { font-size: 11px; color: var(--muted); font-weight: 500; }
   .status-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
   .status-dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: var(--red-bright);
-    box-shadow: 0 0 10px var(--red-bright);
+    background: var(--red-bright); box-shadow: 0 0 10px var(--red-bright);
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -104,10 +98,8 @@
   .hero-tag {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 14px; border-radius: 99px;
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    font-size: 12px; font-weight: 500; color: var(--red-bright);
-    margin-bottom: 24px;
+    background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);
+    font-size: 12px; font-weight: 500; color: var(--red-bright); margin-bottom: 24px;
   }
   .hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 20px; }
   .hero h1 .red { color: var(--red-bright); }
@@ -269,7 +261,7 @@
   /* FEATURES 3x3 LAYOUT */
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3x3 Grid */
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin: 40px 0;
   }
@@ -277,26 +269,16 @@
   @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
 
   .feature-card {
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px 20px;
-    text-align: center;
-    transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--bg-3); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px 20px; text-align: center; transition: all 0.3s;
+    display: flex; flex-direction: column; align-items: center;
   }
   .feature-card:hover { border-color: var(--red); transform: translateY(-2px); }
   .feature-icon {
-    width: 48px; height: 48px;
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    border-radius: 12px;
+    width: 48px; height: 48px; background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 12px;
     display: inline-flex; align-items: center; justify-content: center;
-    margin-bottom: 14px;
-    color: var(--red-bright);
-    font-size: 20px;
+    margin-bottom: 14px; color: var(--red-bright); font-size: 20px;
   }
   .feature-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
   .feature-desc { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
@@ -312,46 +294,22 @@
   @media (max-width: 600px) { .steps-grid { grid-template-columns: 1fr; } }
 
   .step-card {
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px 24px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--bg-3); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 24px; position: relative; overflow: hidden; transition: all 0.3s;
+    text-align: center; display: flex; flex-direction: column; align-items: center;
   }
   .step-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
   }
   .step-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
   .step-card:hover::before { transform: scaleX(1); }
-  .step-num {
-    font-size: 36px; font-weight: 900;
-    color: var(--bg-2);
-    -webkit-text-stroke: 1px var(--red);
-    line-height: 1;
-    margin-bottom: 16px;
-  }
+  .step-num { font-size: 36px; font-weight: 900; color: var(--bg-2); -webkit-text-stroke: 1px var(--red); line-height: 1; margin-bottom: 16px; }
   .step-icon {
-    width: 56px;
-    height: 56px;
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    border-radius: 50%;
+    width: 56px; height: 56px; background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px;
-    color: var(--red-bright);
-    font-size: 24px;
+    margin-bottom: 16px; color: var(--red-bright); font-size: 24px;
   }
   .step-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
   .step-desc { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
@@ -360,13 +318,6 @@
   .section-title { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; text-align: center; }
   .section-sub { font-size: 13px; color: var(--muted); max-width: 640px; margin: 0 auto 30px; text-align: justify; text-align-last: center; line-height: 1.7; }
   .section-tag { display: block; font-size: 11px; font-weight: 600; color: var(--red-bright); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; text-align: center; }
-
-  .note { background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; text-align: left; }
-  .note-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .note-title i { color: var(--red-bright); }
-  .note p { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
-  .note code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; font-size: 11px; color: var(--red-bright); font-family: 'Courier New', monospace; }
-  .note pre { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--muted); overflow-x: auto; line-height: 1.6; margin-top: 10px; text-align: left; }
 
   footer { border-top: 1px solid var(--border); padding: 30px 0; text-align: center; }
   .footer-text { font-size: 12px; color: var(--muted); text-align: justify; text-align-last: center; line-height: 1.7; }
@@ -437,7 +388,7 @@
             <i class="fas fa-link"></i>
             <input id="urlInput" type="text" class="input-field" placeholder="https://shopee.co.id/nama-toko" autocomplete="off" />
           </div>
-          <button id="scrapeBtn" class="btn btn-red" onclick="startExtraction()">
+          <button class="btn btn-red" onclick="startExtraction(this)">
             <i class="fas fa-magnifying-glass"></i>
             <span>Ekstrak Sekarang</span>
           </button>
@@ -469,7 +420,7 @@
           <div style="font-size: 12px; color: var(--muted);">
             <span id="htmlCharCount">0</span> karakter
           </div>
-          <button class="btn btn-red btn-sm" onclick="startExtraction()">
+          <button class="btn btn-red btn-sm" onclick="startExtraction(this)">
             <i class="fas fa-play"></i> Proses HTML
           </button>
         </div>
@@ -784,15 +735,6 @@ function switchMode(mode) {
   document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
   document.getElementById('urlMode').classList.toggle('hidden', mode !== 'url');
   document.getElementById('htmlMode').classList.toggle('hidden', mode !== 'html');
-  
-  const btn = document.getElementById('scrapeBtn');
-  if (btn) {
-    if (mode === 'url') {
-      btn.innerHTML = '<i class="fas fa-magnifying-glass"></i><span>Ekstrak Sekarang</span>';
-    } else {
-      btn.innerHTML = '<i class="fas fa-play"></i><span>Proses HTML</span>';
-    }
-  }
 }
 
 document.getElementById('htmlInput').addEventListener('input', function() {
@@ -800,7 +742,7 @@ document.getElementById('htmlInput').addEventListener('input', function() {
 });
 
 document.getElementById('urlInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') startExtraction();
+  if (e.key === 'Enter') startExtraction(document.querySelector('#urlMode .btn-red'));
 });
 
 function pasteClipboard() {
@@ -921,15 +863,8 @@ function parseShopeeProducts(html) {
   return products;
 }
 
-async function convertToPng(imageUrl) {
-  if (!imageUrl) throw new Error('No image URL');
-
-  let proxyUrl = imageUrl;
-  if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('blob:')) {
-    const cleanUrl = imageUrl.replace(/^https?:\/\//, '');
-    proxyUrl = 'https://wsrv.nl/?url=' + encodeURIComponent(cleanUrl) + '&output=png&w=600&h=600&fit=cover';
-  }
-
+// Fungsi bantu untuk memuat gambar lewat proxy
+function loadImage(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -938,29 +873,7 @@ async function convertToPng(imageUrl) {
     img.onload = () => {
       if (done) return;
       done = true;
-      try {
-        const canvas = document.createElement('canvas');
-        const size = Math.max(img.naturalWidth || 600, 600);
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, size, size);
-        
-        const ratio = Math.max(size / img.naturalWidth, size / img.naturalHeight);
-        const newW = img.naturalWidth * ratio;
-        const newH = img.naturalHeight * ratio;
-        const x = (size - newW) / 2;
-        const y = (size - newH) / 2;
-        ctx.drawImage(img, x, y, newW, newH);
-
-        canvas.toBlob(blob => {
-          if (blob) resolve(blob);
-          else reject(new Error('Canvas toBlob failed'));
-        }, 'image/png', 1.0);
-      } catch (e) {
-        reject(e);
-      }
+      resolve(img);
     };
 
     img.onerror = () => {
@@ -973,8 +886,52 @@ async function convertToPng(imageUrl) {
       if (!done) reject(new Error('Image load timeout'));
     }, 15000);
 
-    img.src = proxyUrl;
+    img.src = url;
   });
+}
+
+async function convertToPng(imageUrl) {
+  if (!imageUrl) throw new Error('No image URL');
+
+  const proxies = [
+    'https://images.weserv.nl/?url=' + encodeURIComponent(imageUrl) + '&output=png&w=600&h=600&fit=cover&n=-1',
+    'https://corsproxy.io/?url=' + encodeURIComponent(imageUrl),
+    imageUrl
+  ];
+
+  for (let i = 0; i < proxies.length; i++) {
+    try {
+      const proxyUrl = proxies[i];
+      const img = await loadImage(proxyUrl);
+      
+      const canvas = document.createElement('canvas');
+      const size = Math.max(img.naturalWidth || 600, 600);
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, size, size);
+      
+      const ratio = Math.max(size / img.naturalWidth, size / img.naturalHeight);
+      const newW = img.naturalWidth * ratio;
+      const newH = img.naturalHeight * ratio;
+      const x = (size - newW) / 2;
+      const y = (size - newH) / 2;
+      ctx.drawImage(img, x, y, newW, newH);
+
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (blob) resolve(blob);
+          else reject(new Error('Canvas toBlob failed'));
+        }, 'image/png', 1.0);
+      });
+
+      return blob;
+    } catch (e) {
+      // Coba proxy berikutnya
+    }
+  }
+  throw new Error('Semua proxy gambar gagal');
 }
 
 function generatePlaceholderPng(index) {
@@ -1062,10 +1019,9 @@ function updateStats(products, images, sizeKb) {
   }
 }
 
-async function startExtraction() {
+async function startExtraction(btn) {
   if (state.isProcessing) return;
 
-  const btn = document.getElementById('scrapeBtn');
   const originalBtnHtml = btn.innerHTML;
   
   const url = document.getElementById('urlInput').value.trim();
@@ -1137,7 +1093,7 @@ async function startExtraction() {
 
     if (products.length === 0) {
       setStageDetail(2, 'Tidak ada produk ditemukan');
-      showToast('Tidak ada produk ditemukan di HTML. Pastikan HTML dari halaman toko yang sudah termuat penuh.', 'error');
+      showToast('Tidak ada produk ditemukan. Pastikan HTML dari halaman toko yang sudah termuat penuh.', 'error');
       state.isProcessing = false;
       btn.disabled = false;
       btn.innerHTML = originalBtnHtml;
@@ -1439,13 +1395,6 @@ function downloadZip() {
 
 window.addEventListener('load', function() {
   setTimeout(() => document.getElementById('urlInput').focus(), 300);
-});
-
-document.addEventListener('keydown', function(e) {
-  if (e.ctrlKey && e.key === 'Enter') {
-    e.preventDefault();
-    startExtraction();
-  }
 });
 </script>
 
