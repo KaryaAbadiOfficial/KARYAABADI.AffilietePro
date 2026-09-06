@@ -130,21 +130,6 @@
 
   .input-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
 
-  .instructions { background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 10px; padding: 14px 16px; margin-top: 12px; }
-  .instructions-title { font-size: 12px; font-weight: 700; color: var(--red-bright); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .instructions ol { list-style: none; counter-reset: step; }
-  .instructions li {
-    counter-increment: step; font-size: 12px; color: var(--muted);
-    padding: 4px 0 4px 28px; position: relative; text-align: justify; text-align-last: left;
-  }
-  .instructions li::before {
-    content: counter(step); position: absolute; left: 0; top: 4px;
-    width: 18px; height: 18px; background: var(--red); color: var(--white);
-    border-radius: 50%; font-size: 10px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* Execution Guide */
   .exec-card {
     background: var(--bg-3);
     border: 1px solid var(--red);
@@ -154,84 +139,30 @@
     text-align: center;
     box-shadow: 0 0 40px rgba(220, 38, 38, 0.1);
   }
-  .exec-title {
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
+  .exec-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
   .exec-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-    text-align: justify;
-    text-align-last: center;
-    line-height: 1.7;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+    text-align: justify; text-align-last: center; line-height: 1.7;
+    max-width: 500px; margin-left: auto; margin-right: auto;
   }
   .bookmarklet-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 18px 32px;
-    background: var(--red);
-    color: var(--white);
-    font-weight: 800;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 2px dashed var(--white);
-    cursor: grab;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4);
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 18px 32px; background: var(--red); color: var(--white);
+    font-weight: 800; font-size: 16px; border-radius: 12px;
+    border: 2px dashed var(--white); cursor: grab; text-decoration: none;
+    transition: all 0.2s; box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4);
     margin-bottom: 24px;
   }
   .bookmarklet-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(220, 38, 38, 0.6);
+    transform: translateY(-3px); box-shadow: 0 12px 40px rgba(220, 38, 38, 0.6);
     background: var(--red-bright);
   }
-  .bookmarklet-btn:active {
-    cursor: grabbing;
-  }
-  .step-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: left;
-  }
-  .step-item {
-    display: flex;
-    gap: 14px;
-    background: var(--bg-2);
-    padding: 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-  .step-num {
-    width: 28px;
-    height: 28px;
-    background: var(--red);
-    color: var(--white);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-  .step-text {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    text-align: justify;
-    text-align-last: left;
-    padding-top: 4px;
-  }
+  .bookmarklet-btn:active { cursor: grabbing; }
+  
+  .step-list { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 500px; margin: 0 auto; text-align: left; }
+  .step-item { display: flex; gap: 14px; background: var(--bg-2); padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
+  .step-num { width: 28px; height: 28px; background: var(--red); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; flex-shrink: 0; }
+  .step-text { font-size: 13px; color: var(--muted); line-height: 1.6; text-align: justify; text-align-last: left; padding-top: 4px; }
   .step-text strong { color: var(--white); }
   .step-text a { color: var(--red-bright); text-decoration: none; font-weight: 600; }
   .step-text a:hover { text-decoration: underline; }
@@ -291,14 +222,14 @@
   <div class="container-pro">
     <div class="hero-tag">
       <i class="fas fa-bolt"></i>
-      <span>Bypass Anti-Bot Shopee · Ekstraksi 1 Klik · Output ZIP</span>
+      <span>Langsung Ambil Semua · Tanpa Gulir Manual · Output ZIP</span>
     </div>
     <h1>
-      Ambil Semua Produk.<br>
-      Kemas Jadi <span class="red">Satu ZIP Rapi.</span>
+      Kemas Semua Produk.<br>
+      Ke <span class="red">Satu ZIP Rapi.</span>
     </h1>
     <p class="text-justify-center">
-      Karena Shopee memblokir scraping otomatis berbasis URL, tool ini menggunakan teknologi Bookmarklet Cerdas. Tempel URL toko Anda di bawah ini, buat tombol ekstraknya, lalu klik tombol tersebut saat berada di halaman toko Shopee. Sistem akan membaca seluruh produk secara langsung di browser Anda, mengonversinya ke PNG, dan mengemasnya ke dalam ZIP dengan penomoran urut sesuai link pembelian.
+      Tempel link toko Shopee di kolom input, lalu buat tombol ekstraknya. Saat dieksekusi di halaman toko, sistem akan langsung melompat ke dasar halaman secara kilat untuk memuat seluruh katalog dari semua kategori tanpa perlu Anda gulir manual. Semua gambar dikonversi menjadi PNG dan dikemas ke dalam ZIP dengan penamaan persis sesuai link afiliasi pembeliannya.
     </p>
 
     <div class="input-card">
@@ -322,12 +253,11 @@
       </div>
     </div>
 
-    <!-- Execution Guide (Hidden initially) -->
     <div id="execGuide" class="hidden">
       <div class="exec-card">
         <div class="exec-title">Cara Eksekusi (100% Berhasil)</div>
         <p class="exec-sub">
-          Tool ini dirancang untuk menembus sistem keamanan Shopee dengan mengeksekusi perintah langsung di halaman toko yang Anda buka. Ikuti 4 langkah mudah di bawah ini untuk mengunduh seluruh gambar produk ke dalam satu file ZIP.
+          Tool ini dirancang untuk mengambil seluruh produk di toko secara langsung tanpa fitur gulir manual. Ikuti 4 langkah mudah di bawah ini untuk mengunduh seluruh katalog produk ke dalam satu file ZIP.
         </p>
         
         <a id="bookmarkletLink" href="#" class="bookmarklet-btn" draggable="true">
@@ -345,19 +275,19 @@
           <div class="step-item">
             <div class="step-num">2</div>
             <div class="step-text">
-              <strong>Geser tombol merah di atas</strong> ke Bookmark Bar browser Anda untuk menyimpannya.
+              <strong>Geser tombol merah di atas</strong> ke Bookmark Bar browser Anda untuk menyimpannya sebagai pintasan.
             </div>
           </div>
           <div class="step-item">
             <div class="step-num">3</div>
             <div class="step-text">
-              Buka link toko Shopee Anda: <a id="storeLink" href="#" target="_blank">Klik di sini untuk buka toko</a>. Scroll ke bawah perlahan agar semua produk termuat di layar.
+              Buka link toko Shopee Anda: <a id="storeLink" href="#" target="_blank">Klik di sini untuk buka toko</a>. Tidak masalah jika URL mengandung <code>?categoryId=</code>, sistem akan otomatis beralih ke tab "Semua Produk".
             </div>
           </div>
           <div class="step-item">
             <div class="step-num">4</div>
             <div class="step-text">
-              Klik tombol <strong>"Ekstrak Shopee"</strong> yang ada di Bookmark Bar Anda. Tunggu proses selesai, file ZIP akan otomatis terunduh.
+              Klik tombol <strong>"Ekstrak Shopee"</strong> di Bookmark Bar. Sistem akan langsung melompat ke dasar halaman kilat, mengambil semua produk, dan mengemasnya ke ZIP tanpa Anda perlu menggulir.
             </div>
           </div>
         </div>
@@ -376,24 +306,24 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
-          <i class="fas fa-shield-halved"></i>
+          <i class="fas fa-bolt"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Anti-Blokir Shopee</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Menjalankan ekstraksi langsung di halaman target, melewati sistem keamanan Cloudflare Shopee tanpa terdeteksi bot.</p>
+        <h3 class="font-bold text-base mb-2">Ambil Langsung Semua</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Sistem akan melompat ke dasar halaman secara kilat, menjamin seluruh produk dari semua kategori di toko tersebut berhasil dimuat dan dikemas tanpa perlu gulir manual.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
-          <i class="fas fa-image"></i>
+          <i class="fas fa-shield-halved"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Konversi PNG Otomatis</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Setiap gambar produk yang berhasil diambil akan otomatis dikonversi ke dalam format PNG berkualitas tinggi melalui metode canvas renderer.</p>
+        <h3 class="font-bold text-base mb-2">Anti-Blokir Shopee</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Menjalankan ekstraksi langsung di halaman target, melewati sistem keamanan Cloudflare Shopee tanpa terdeteksi sebagai bot oleh server.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
           <i class="fas fa-link"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Nama File = Link</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Penamaan file PNG mengikuti tautan atau link pembelian produk aslinya, sehingga apabila Anda membutuhkan rujukan kembali, produk tersebut dapat ditelusuri dengan sangat mudah.</p>
+        <h3 class="font-bold text-base mb-2">Nama File = Link Produk</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Penamaan file PNG mengikuti tautan atau link afiliasi pembelian produk aslinya secara persis, sehingga sangat mudah ditelusuri kembali.</p>
       </div>
     </div>
   </div>
@@ -459,21 +389,31 @@ function generateTool() {
     return;
   }
 
-  // Set the link for the user to click
   document.getElementById('storeLink').href = url;
   
-  // Generate Bookmarklet Code
+  // Kode Bookmarklet: Auto-Redirect ke All Products + Instant Jump Load (Tanpa Scroll Manual)
   const bookmarkletCode = `
     (function() {
       if (window.__affProRunning) {
-        alert('Ekstraksi sedang berjalan, mohon tunggu...');
+        alert('Proses ekstraksi sedang berjalan, mohon tunggu...');
         return;
       }
-      window.__affProRunning = true;
+      
+      var path = window.location.pathname;
+      var parts = path.split('/').filter(Boolean);
+      var shopName = parts[0];
 
+      // Cek apakah sedang di halaman "Semua Produk" (/all_products)
+      if (parts.length < 2 || parts[1] !== 'all_products') {
+        alert('Sistem akan mengarahkan Anda ke halaman SEMUA PRODUK toko ini.\\nSetelah halaman termuat, SILAKAN KLIK LAGI tombol "Ekstrak Shopee" di Bookmark Bar Anda.');
+        window.location.href = 'https://shopee.co.id/' + shopName + '/all_products';
+        return;
+      }
+
+      window.__affProRunning = true;
       var div = document.createElement('div');
-      div.style.cssText = 'position:fixed;top:20px;right:20px;width:320px;background:#000;color:#fff;z-index:999999;border:2px solid #DC2626;border-radius:12px;padding:20px;font-family:sans-serif;box-shadow:0 10px 30px rgba(0,0,0,0.5);';
-      div.innerHTML = '<h3 style="margin:0 0 10px 0;color:#EF4444;font-weight:800;">AFFILIATE PRO</h3><p style="font-size:12px;margin:0 0 10px 0;color:#9CA3AF;">Mempersiapkan ekstraksi...</p><div style="width:100%;height:6px;background:#1A1A1A;border-radius:99px;overflow:hidden;"><div id="aff_pro_bar" style="width:0%;height:100%;background:#DC2626;transition:width 0.3s;"></div></div><p id="aff_pro_txt" style="font-size:12px;margin:10px 0 0 0;color:#fff;"></p>';
+      div.style.cssText = 'position:fixed;top:20px;right:20px;width:340px;background:#000;color:#fff;z-index:999999;border:2px solid #DC2626;border-radius:12px;padding:20px;font-family:sans-serif;box-shadow:0 10px 30px rgba(0,0,0,0.5);';
+      div.innerHTML = '<h3 style="margin:0 0 10px 0;color:#EF4444;font-weight:800;">AFFILIATE PRO</h3><p id="aff_pro_txt" style="font-size:13px;margin:0 0 10px 0;color:#9CA3AF;">Memulai ekstraksi...</p><div style="width:100%;height:8px;background:#1A1A1A;border-radius:99px;overflow:hidden;"><div id="aff_pro_bar" style="width:0%;height:100%;background:#DC2626;transition:width 0.3s;"></div></div>';
       document.body.appendChild(div);
 
       var updateUI = function(percent, text) {
@@ -481,38 +421,69 @@ function generateTool() {
         document.getElementById('aff_pro_txt').innerText = text;
       };
 
-      updateUI(10, 'Memuat JSZip...');
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-      document.body.appendChild(s);
+      async function loadScript(url) {
+        return new Promise((resolve) => {
+          var s = document.createElement('script');
+          s.src = url;
+          s.onload = resolve;
+          document.body.appendChild(s);
+        });
+      }
 
-      s.onload = async function() {
-        updateUI(20, 'Memindai produk...');
+      async function instantLoadAll() {
+        updateUI(10, 'Melompat ke dasar halaman untuk memuat SEMUA produk...');
+        var lastHeight = 0;
+        var stableCount = 0;
+        
+        // Sistem Instant Jump (Lompat langsung ke dasar halaman berkali-kali)
+        while(stableCount < 3) {
+          window.scrollTo(0, document.body.scrollHeight);
+          await new Promise(r => setTimeout(r, 1500)); // Jeda 1.5 detik per lompatan agar React Shopee sempat render
+          
+          if (document.body.scrollHeight === lastHeight) {
+            stableCount++;
+          } else {
+            stableCount = 0;
+            lastHeight = document.body.scrollHeight;
+          }
+        }
+        window.scrollTo(0, 0);
+      }
+
+      async function run() {
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+        await instantLoadAll();
+
+        updateUI(30, 'Memindai SEMUA produk di toko...');
         var products = [];
+        var seenLinks = {};
+        
         document.querySelectorAll('a[href*="-i."]').forEach(function(a) {
           var img = a.querySelector('img') || a.parentElement.querySelector('img');
           var bg = a.parentElement.querySelector('[style*="background-image"]');
           var imgSrc = img ? img.src : '';
           if (!imgSrc && bg) {
-            var m = bg.style.backgroundImage.match(/url\\(["\\']?(.*?)["\\']?\\)/);
+            var m = bg.style.backgroundImage.match(/url\\(["']?(.*?)["']?\\)/);
             if (m) imgSrc = m[1];
           }
           var link = a.href.split('?')[0];
-          if (link && !products.find(function(p){return p.link === link})) {
+          if (link && !seenLinks[link]) {
+            seenLinks[link] = true;
             products.push({ link: link, image: imgSrc, title: img ? img.alt : 'Produk' });
           }
         });
 
         if (products.length === 0) {
-          alert('Tidak ada produk ditemukan. Pastikan Anda sudah scroll ke bawah!');
+          updateUI(100, 'Tidak ada produk ditemukan!');
+          alert('Tidak ada produk ditemukan. Pastikan Anda sudah di halaman "Semua Produk".');
           div.remove();
           window.__affProRunning = false;
           return;
         }
 
-        updateUI(30, products.length + ' produk ditemukan. Mengunduh gambar...');
+        updateUI(40, products.length + ' produk ditemukan! Mengonversi ke PNG...');
         var zip = new JSZip();
-        var folder = zip.folder('AFFILIATE_PRO');
+        var folder = zip.folder('AFFILIATE_PRO_' + shopName);
 
         for (var i = 0; i < products.length; i++) {
           var p = products[i];
@@ -535,35 +506,35 @@ function generateTool() {
                 img.src = p.image;
               });
 
-              var name = p.link.replace('https://shopee.co.id/', '').replace(/[^a-z0-9.-]/gi, '_').substring(0, 80);
-              folder.file((i + 1) + '_' + name + '.png', blob);
+              var fileName = p.link.replace(/^https?:\\/\\//, '').replace(/[^a-zA-Z0-9.-]/g, '_').substring(0, 100);
+              folder.file((i + 1) + '_' + fileName + '.png', blob);
             } catch (e) {}
           }
-          updateUI(30 + Math.round((i / products.length) * 60), 'Memproses ' + (i + 1) + '/' + products.length);
+          var progress = 40 + Math.round((i / products.length) * 50);
+          updateUI(progress, 'Memproses ' + (i + 1) + '/' + products.length);
         }
 
-        updateUI(90, 'Membuat ZIP...');
+        updateUI(90, 'Membuat file ZIP...');
         var content = await zip.generateAsync({type: 'blob', compression: 'DEFLATE'});
         var a = document.createElement('a');
         a.href = URL.createObjectURL(content);
-        a.download = 'Affiliate_Pro_Extract.zip';
+        a.download = 'Affiliate_Pro_' + shopName + '.zip';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
-        updateUI(100, 'Selesai! Cek folder Unduhan Anda.');
-        setTimeout(function() { div.remove(); window.__affProRunning = false; }, 3000);
-      };
+        updateUI(100, 'Selesai! ' + products.length + ' produk dikemas ke ZIP.');
+        setTimeout(function() { div.remove(); window.__affProRunning = false; }, 5000);
+      }
+
+      run();
     })();
   `;
 
-  // Set href with javascript: protocol
   document.getElementById('bookmarkletLink').href = 'javascript:' + encodeURIComponent(bookmarkletCode.trim());
 
-  // Show the execution guide
   document.getElementById('execGuide').classList.remove('hidden');
   
-  // Scroll to guide
   setTimeout(() => {
     document.getElementById('execGuide').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
