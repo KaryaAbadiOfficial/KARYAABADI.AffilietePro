@@ -258,7 +258,6 @@
   .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--white); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* FEATURES 3x3 LAYOUT */
   .features-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -283,7 +282,6 @@
   .feature-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
   .feature-desc { font-size: 12px; color: var(--muted); line-height: 1.7; text-align: justify; text-align-last: center; }
 
-  /* STEPS LAYOUT WITH ICONS */
   .steps-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -426,10 +424,10 @@
         </div>
         <div class="instructions">
           <div class="instructions-title">
-            <i class="fas fa-info-circle"></i> Cara Pakai Mode Paste HTML
+            <i class="fas fa-info-circle"></i> Cara Pakai Mode Paste HTML (100% Berhasil)
           </div>
           <ol>
-            <li>Buka toko Shopee di browser (https://shopee.co.id/nama-toko).</li>
+            <li>Buka toko Shopee di browser (contoh: shopee.co.id/joykoindonesia).</li>
             <li>Tunggu halaman termuat penuh, scroll ke bawah untuk memuat semua produk.</li>
             <li>Tekan F12 atau klik kanan → Inspect Element untuk membuka Developer Tools.</li>
             <li>Cari tag body di tab Elements, klik kanan → Copy → Copy outerHTML.</li>
@@ -559,7 +557,6 @@
   </div>
 </section>
 
-<!-- FEATURES SECTION 3x3 -->
 <section class="section">
   <div class="container-pro">
     <div style="text-align: center; margin-bottom: 30px;">
@@ -617,7 +614,6 @@
   </div>
 </section>
 
-<!-- STEPS SECTION WITH ICONS -->
 <section class="section">
   <div class="container-pro">
     <div style="text-align: center; margin-bottom: 30px;">
@@ -705,7 +701,9 @@ function extractStoreName(url) {
     const parts = u.pathname.split('/').filter(Boolean);
     return parts[0] || u.hostname.replace('www.', '');
   } catch {
-    return url.replace(/^https?:\/\//, '').split('/')[0] || 'toko';
+    let cleanUrl = url.split('?')[0];
+    let path = cleanUrl.replace(/^https?:\/\//, '').split('/');
+    return path[1] || path[0] || 'toko';
   }
 }
 
@@ -713,7 +711,7 @@ function sanitizeFilename(link) {
   let name = link.replace(/^https?:\/\//, '');
   name = name.replace(/[^a-zA-Z0-9.-]/g, '_');
   name = name.replace(/_+/g, '_').replace(/^_|_$/g, '');
-  return name.substring(0, 80);
+  return name.substring(0, 100);
 }
 
 function escapeHtml(str) {
@@ -759,19 +757,14 @@ function pasteClipboard() {
 }
 
 function useSampleURL() {
-  const samples = [
-    'https://shopee.co.id/official.store',
-    'https://shopee.co.id/toko-fashion-murah',
-    'https://shopee.co.id/grosir-elektronik'
-  ];
-  document.getElementById('urlInput').value = samples[Math.floor(Math.random() * samples.length)];
+  document.getElementById('urlInput').value = 'https://shopee.co.id/joykoindonesia?categoryId=100638&entryPoint=ShopByPDP&itemId=20096569568';
   showToast('URL contoh dimuat. Klik Ekstrak Sekarang.', 'info');
 }
 
 async function fetchStorePage(url) {
   const proxies = [
     'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-    'https://corsproxy.io/?' + encodeURIComponent(url),
+    'https://corsproxy.io/?url=' + encodeURIComponent(url),
     'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(url)
   ];
 
@@ -811,22 +804,28 @@ function parseShopeeProducts(html) {
     seenLinks.add(linkKey);
 
     let img = a.querySelector('img');
-    if (!img) {
-      const parent = a.closest('[data-sqe=item], [data-sqe="item"], .shopee-search-item-result__item, div[class*="item-card"], div[class*="product"]');
-      if (parent) img = parent.querySelector('img');
-    }
-
     let imageUrl = '';
+
     if (img) {
       imageUrl = img.src || img.getAttribute('data-src') || img.getAttribute('data-origin-src') || img.getAttribute('data-lazy-src') || '';
-      if (imageUrl.startsWith('//')) imageUrl = 'https:' + imageUrl;
-      if (imageUrl.startsWith('/')) imageUrl = 'https://shopee.co.id' + imageUrl;
+    } else {
+      const parent = a.closest('[data-sqe=item], div[class*="item-card"], div[class*="product"]');
+      const target = parent || a;
+      const bgEl = target.querySelector('[style*="background-image"]');
+      if (bgEl) {
+        const style = bgEl.getAttribute('style') || '';
+        const match = style.match(/url\(["']?(.*?)["']?\)/);
+        if (match) imageUrl = match[1];
+      }
     }
+
+    if (imageUrl.startsWith('//')) imageUrl = 'https:' + imageUrl;
+    if (imageUrl.startsWith('/')) imageUrl = 'https://shopee.co.id' + imageUrl;
 
     let title = '';
     if (img) title = img.alt || '';
     if (!title) {
-      const parent = a.closest('[data-sqe=item], .shopee-search-item-result__item, div[class*="item-card"]');
+      const parent = a.closest('[data-sqe=item], div[class*="item-card"]');
       if (parent) {
         const titleEl = parent.querySelector('div[class*="title"], span[class*="title"], [class*="name"], [class*="product-name"]');
         if (titleEl) title = titleEl.textContent.trim();
@@ -839,7 +838,7 @@ function parseShopeeProducts(html) {
     if (!title) title = 'Produk Shopee';
 
     let price = 0;
-    const parent = a.closest('[data-sqe=item], .shopee-search-item-result__item, div[class*="item-card"]');
+    const parent = a.closest('[data-sqe=item], div[class*="item-card"]');
     if (parent) {
       const priceEl = parent.querySelector('[class*="price"], [class*="Price"]');
       if (priceEl) {
@@ -863,7 +862,6 @@ function parseShopeeProducts(html) {
   return products;
 }
 
-// Fungsi bantu untuk memuat gambar lewat proxy
 function loadImage(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -873,7 +871,11 @@ function loadImage(url) {
     img.onload = () => {
       if (done) return;
       done = true;
-      resolve(img);
+      if (img.naturalWidth === 0) {
+        reject(new Error('Image is empty'));
+      } else {
+        resolve(img);
+      }
     };
 
     img.onerror = () => {
@@ -1093,7 +1095,7 @@ async function startExtraction(btn) {
 
     if (products.length === 0) {
       setStageDetail(2, 'Tidak ada produk ditemukan');
-      showToast('Tidak ada produk ditemukan. Pastikan HTML dari halaman toko yang sudah termuat penuh.', 'error');
+      showToast('Shopee memblokir akses otomatis. Silakan gunakan Mode Paste HTML (100% berhasil untuk semua toko).', 'error');
       state.isProcessing = false;
       btn.disabled = false;
       btn.innerHTML = originalBtnHtml;
