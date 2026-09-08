@@ -228,14 +228,14 @@
   <div class="container-pro">
     <div class="hero-tag">
       <i class="fas fa-bolt"></i>
-      <span>Logika Cek Hash #product_list · Native ZIP Engine · Anti-Error</span>
+      <span>Native ZIP Engine Fix · 1 Klik Langsung Ekstrak · Anti-Corrupt</span>
     </div>
     <h1>
       Kemas Semua Produk.<br>
       Ke <span class="red">Satu ZIP Rapi.</span>
     </h1>
     <p class="text-justify-center">
-      Tempel link toko Shopee (misal: yang memiliki akhiran #product_list) di kolom input, lalu buat tombol ekstraknya. Sistem akan otomatis memeriksa halaman tersebut, menggulir halaman di latar belakang untuk memuat semua produk tanpa batas, mengunduh gambar dalam format PNG murni tanpa canvas, dan mengemasnya ke dalam ZIP dengan penamaan persis sesuai link afiliasi pembeliannya. Dijamin bebas bug CSP maupun CORS.
+      Tempel link toko Shopee (contoh: yang memiliki akhiran #product_list) di kolom input, lalu buat tombol ekstraknya. Sistem akan otomatis memeriksa halaman, memuat seluruh produk, mengunduh gambar dalam format PNG tanpa canvas, dan mengemasnya ke dalam file ZIP yang presisi menggunakan mesin Native ZIP Engine. Dijamin rapi, bebas bug CSP, dan file ZIP tidak akan corrupt saat diekstrak.
     </p>
 
     <div class="input-card">
@@ -263,7 +263,7 @@
       <div class="exec-card">
         <div class="exec-title">Cara Eksekusi (1 Klik Langsung Berfungsi)</div>
         <p class="exec-sub">
-          Tool ini dirancang untuk membaca halaman "Semua Produk" (#product_list) dengan logika cek otomatis. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP tanpa error.
+          Tool ini menggunakan mesin ZIP bawaan yang menulis file secara presisi (menggunakan TextEncoder dan Uint8Array), menjamin file ZIP tidak rusak. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP tanpa error.
         </p>
         
         <a id="bookmarkletLink" href="#" class="bookmarklet-btn" draggable="true">
@@ -294,7 +294,7 @@
           <div class="step-item">
             <div class="step-num">4</div>
             <div class="step-text">
-              Klik tombol <strong>"Ekstrak Shopee"</strong> di Bookmark Bar. Sistem akan menggulir halaman otomatis, mengambil semua gambar PNG, dan langsung mengunduh ZIP tanpa error CSP.
+              Klik tombol <strong>"Ekstrak Shopee"</strong> di Bookmark Bar. Sistem akan menggulir halaman otomatis, mengambil gambar PNG, dan mengemas ke ZIP yang bisa diekstrak dengan sempurna.
             </div>
           </div>
         </div>
@@ -313,17 +313,17 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
-          <i class="fas fa-bolt"></i>
+          <i class="fas fa-file-zipper"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Logika Cek #product_list</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Sistem kini mendeteksi penanda hash "Semua Produk" milik Shopee. Halaman daftar produk akan discan dari atas ke bawah tanpa ada produk yang terlewatkan.</p>
+        <h3 class="font-bold text-base mb-2">Native ZIP Presisi (Fix Corrupt)</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Mesin ZIP kini menghitung byte header (Local, Central, End) secara presisi menggunakan Uint8Array. File ZIP dijamin tidak corrupt dan bisa diekstrak oleh WinRAR/7-Zip dengan sempurna.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
           <i class="fas fa-shield-halved"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Native ZIP Engine Anti-Blokir</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Tidak menggunakan library eksternal yang diblokir kebijakan CSP Shopee. Mesin ZIP ditulis murni dengan JavaScript dasar, memastikan proses berjalan mulus tanpa diblokir browser.</p>
+        <h3 class="font-bold text-base mb-2">Anti-Blokir CSP Shopee</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Tidak menggunakan library eksternal yang diblokir kebijakan CSP Shopee. Semua proses menempel di halaman secara direct execution, memastikan sistem berjalan tanpa diblokir.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
@@ -398,7 +398,7 @@ function generateTool() {
 
   document.getElementById('storeLink').href = url;
   
-  // Kode Bookmarklet: Logika Cek Hash #product_list + Native ZIP + Direct Blob PNG Fetch
+  // Kode Bookmarklet: Native ZIP Engine Presisi + Logika Cek #product_list
   const bookmarkletCode = `
     (function() {
       if (window.__affProRunning) {
@@ -425,29 +425,93 @@ function generateTool() {
         if(x) x.innerText = t;
       }
 
-      // --- NATIVE ZIP ENGINE START ---
-      function u16(n){return [n&255,(n>>>8)&255];}
-      function u32(n){return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];}
-      function strToU8(str){var a=[];for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);if(c<128)a.push(c);else if(c<2048)a.push(192|(c>>6),128|(c&63));else a.push(224|(c>>12),128|((c>>6)&63),128|(c&63));}return new Uint8Array(a);}
-      function crc32(d){var c=~0;for(var i=0;i<d.length;i++){c^=d[i];for(var j=0;j<8;j++)c=(c>>>1)^(0xEDB88320&-(c&1));}return ~c>>>0;}
-      function makeZip(files){
-        var fdata=[], central=[], offset=0;
-        for(var f of files){
-          var nb=strToU8(f.name), crc=crc32(f.data), size=f.data.length;
-          var lh=new Uint8Array([0x50,0x4b,0x03,0x04,20,0,0,0,0,0].concat(u32(crc), u32(size), u32(size), u16(nb.length), 0, 0));
-          fdata.push(lh, nb, f.data);
-          var ch=new Uint8Array([0x50,0x4b,0x01,0x02,20,0,20,0,0,0,0,0].concat(u32(crc), u32(size), u32(size), u16(nb.length), 0, 0, 0, 0, 0, 0, 0, 0).concat(u32(offset)));
-          central.push(ch, nb);
-          offset+=lh.length+nb.length+size;
+      // --- NATIVE ZIP ENGINE FIXED (Presisi 100%) ---
+      function crc32(data) {
+        var c = ~0;
+        for (var i = 0; i < data.length; i++) {
+          c ^= data[i];
+          for (var j = 0; j < 8; j++) {
+            c = (c >>> 1) ^ (0xEDB88320 & -(c & 1));
+          }
         }
-        var cSize=0; for(var c of central)cSize+=c.length;
-        var end=new Uint8Array([0x50,0x4b,0x05,0x06,0,0,0,0].concat(u16(files.length), u16(files.length), u32(cSize), u32(offset), 0, 0));
-        var total=0; var parts=fdata.concat(central, [end]); for(var p of parts)total+=p.length;
-        var zip=new Uint8Array(total); var pos=0;
-        for(var p of parts){zip.set(p,pos);pos+=p.length;}
-        return new Blob([zip],{type:'application/zip'});
+        return ~c >>> 0;
       }
-      async function blobToU8(b){
+      function u16(n) { return new Uint8Array([n & 255, (n >>> 8) & 255]); }
+      function u32(n) { return new Uint8Array([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]); }
+      function concat(arrs) {
+        var len = 0;
+        for (var i = 0; i < arrs.length; i++) len += arrs[i].length;
+        var res = new Uint8Array(len);
+        var pos = 0;
+        for (var i = 0; i < arrs.length; i++) {
+          res.set(arrs[i], pos);
+          pos += arrs[i].length;
+        }
+        return res;
+      }
+      function makeZip(files) {
+        var enc = new TextEncoder();
+        var fileParts = [], centralDir = [], offset = 0;
+        
+        for (var i = 0; i < files.length; i++) {
+          var name = enc.encode(files[i].name);
+          var data = files[i].data;
+          var crc = crc32(data);
+          var size = data.length;
+          
+          var lfh = new Uint8Array(30);
+          lfh.set(new Uint8Array([0x50, 0x4b, 0x03, 0x04]), 0);
+          lfh.set(u16(20), 4);
+          lfh.set(u16(0), 6);
+          lfh.set(u16(0), 8);
+          lfh.set(u16(0), 10);
+          lfh.set(u16(0), 12);
+          lfh.set(u32(crc), 14);
+          lfh.set(u32(size), 18);
+          lfh.set(u32(size), 22);
+          lfh.set(u16(name.length), 26);
+          lfh.set(u16(0), 28);
+          
+          var fBlob = concat([lfh, name, data]);
+          fileParts.push(fBlob);
+          
+          var cdh = new Uint8Array(46);
+          cdh.set(new Uint8Array([0x50, 0x4b, 0x01, 0x02]), 0);
+          cdh.set(u16(20), 4);
+          cdh.set(u16(20), 6);
+          cdh.set(u16(0), 8);
+          cdh.set(u16(0), 10);
+          cdh.set(u16(0), 12);
+          cdh.set(u16(0), 14);
+          cdh.set(u32(crc), 16);
+          cdh.set(u32(size), 20);
+          cdh.set(u32(size), 24);
+          cdh.set(u16(name.length), 28);
+          cdh.set(u16(0), 30);
+          cdh.set(u16(0), 32);
+          cdh.set(u16(0), 34);
+          cdh.set(u16(0), 36);
+          cdh.set(u32(0), 38);
+          cdh.set(u32(offset), 42);
+          
+          centralDir.push(concat([cdh, name]));
+          offset += fBlob.length;
+        }
+        
+        var cBlob = concat(centralDir);
+        var eocd = new Uint8Array(22);
+        eocd.set(new Uint8Array([0x50, 0x4b, 0x05, 0x06]), 0);
+        eocd.set(u16(0), 4);
+        eocd.set(u16(0), 6);
+        eocd.set(u16(files.length), 8);
+        eocd.set(u16(files.length), 10);
+        eocd.set(u32(cBlob.length), 12);
+        eocd.set(u32(offset), 16);
+        eocd.set(u16(0), 20);
+        
+        return new Blob([concat([...fileParts, cBlob, eocd])], { type: 'application/zip' });
+      }
+      async function blobToU8(b) {
         var ab = await b.arrayBuffer();
         return new Uint8Array(ab);
       }
