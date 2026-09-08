@@ -228,14 +228,14 @@
   <div class="container-pro">
     <div class="hero-tag">
       <i class="fas fa-bolt"></i>
-      <span>Native ZIP Engine Fix · 1 Klik Langsung Ekstrak · Anti-Corrupt</span>
+      <span>Loop Semua Kategori · Ambil Semua Produk · Anti-Corrupt ZIP</span>
     </div>
     <h1>
       Kemas Semua Produk.<br>
       Ke <span class="red">Satu ZIP Rapi.</span>
     </h1>
     <p class="text-justify-center">
-      Tempel link toko Shopee (contoh: yang memiliki akhiran #product_list) di kolom input, lalu buat tombol ekstraknya. Sistem akan otomatis memeriksa halaman, memuat seluruh produk, mengunduh gambar dalam format PNG tanpa canvas, dan mengemasnya ke dalam file ZIP yang presisi menggunakan mesin Native ZIP Engine. Dijamin rapi, bebas bug CSP, dan file ZIP tidak akan corrupt saat diekstrak.
+      Tempel link toko Shopee (contoh: yang memiliki akhiran #product_list) di kolom input, lalu buat tombol ekstraknya. Sistem akan otomatis mendeteksi daftar kategori di sidebar toko, mengklik setiap kategori satu per satu tanpa reload halaman, menggulir ke bawah untuk memuat seluruh produk di kategori tersebut, lalu mengemas semuanya ke dalam file ZIP dengan penamaan presisi sesuai link afiliasi pembeliannya. Dijamin tidak ada produk yang terlewat.
     </p>
 
     <div class="input-card">
@@ -261,9 +261,9 @@
 
     <div id="execGuide" class="hidden">
       <div class="exec-card">
-        <div class="exec-title">Cara Eksekusi (1 Klik Langsung Berfungsi)</div>
+        <div class="exec-title">Cara Eksekusi (1 Klik Berfungsi)</div>
         <p class="exec-sub">
-          Tool ini menggunakan mesin ZIP bawaan yang menulis file secara presisi (menggunakan TextEncoder dan Uint8Array), menjamin file ZIP tidak rusak. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP tanpa error.
+          Tool ini dirancang untuk membaca seluruh daftar kategori di toko dan mengambil semua produk di dalamnya. Ikuti langkah di bawah ini untuk mengunduh seluruh katalog ke dalam ZIP tanpa error.
         </p>
         
         <a id="bookmarkletLink" href="#" class="bookmarklet-btn" draggable="true">
@@ -288,13 +288,13 @@
           <div class="step-item">
             <div class="step-num">3</div>
             <div class="step-text">
-              Buka link toko Shopee: <a id="storeLink" href="#" target="_blank">Klik di sini untuk buka toko</a>. Pastikan Anda mengklik tab "Products" / "Semua Produk" agar URL berubah menjadi <code>#product_list</code>.
+              Buka link toko Shopee: <a id="storeLink" href="#" target="_blank">Klik di sini untuk buka toko</a>. Pastikan Anda mengklik tab "Products" / "Semua Produk" agar muncul daftar kategori di sidebar.
             </div>
           </div>
           <div class="step-item">
             <div class="step-num">4</div>
             <div class="step-text">
-              Klik tombol <strong>"Ekstrak Shopee"</strong> di Bookmark Bar. Sistem akan menggulir halaman otomatis, mengambil gambar PNG, dan mengemas ke ZIP yang bisa diekstrak dengan sempurna.
+              Klik tombol <strong>"Ekstrak Shopee"</strong> di Bookmark Bar. Sistem akan otomatis mengklik setiap kategori, menggulir halaman, mengambil gambar PNG, dan mengemas ke ZIP.
             </div>
           </div>
         </div>
@@ -313,17 +313,17 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
-          <i class="fas fa-file-zipper"></i>
+          <i class="fas fa-layer-group"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Native ZIP Presisi (Fix Corrupt)</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Mesin ZIP kini menghitung byte header (Local, Central, End) secara presisi menggunakan Uint8Array. File ZIP dijamin tidak corrupt dan bisa diekstrak oleh WinRAR/7-Zip dengan sempurna.</p>
+        <h3 class="font-bold text-base mb-2">Loop Semua Kategori</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Sistem otomatis mendeteksi daftar kategori di sidebar toko, lalu mengklik dan memuat seluruh produk di setiap kategori tersebut tanpa ada yang terlewatkan.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
-          <i class="fas fa-shield-halved"></i>
+          <i class="fas fa-file-zipper"></i>
         </div>
-        <h3 class="font-bold text-base mb-2">Anti-Blokir CSP Shopee</h3>
-        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Tidak menggunakan library eksternal yang diblokir kebijakan CSP Shopee. Semua proses menempel di halaman secara direct execution, memastikan sistem berjalan tanpa diblokir.</p>
+        <h3 class="font-bold text-base mb-2">Native ZIP Presisi</h3>
+        <p class="text-xs text-gray-400 leading-relaxed text-justify text-center">Mesin ZIP menghitung byte header (Local, Central, End) secara presisi menggunakan Uint8Array. File ZIP dijamin tidak corrupt dan bisa diekstrak oleh WinRAR/7-Zip dengan sempurna.</p>
       </div>
       <div class="bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 text-center transition hover:border-red-600">
         <div class="w-12 h-12 bg-red-600/10 border border-red-600/30 rounded-xl flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
@@ -398,7 +398,7 @@ function generateTool() {
 
   document.getElementById('storeLink').href = url;
   
-  // Kode Bookmarklet: Native ZIP Engine Presisi + Logika Cek #product_list
+  // Kode Bookmarklet: Loop Kategori + Native ZIP Engine Presisi
   const bookmarkletCode = `
     (function() {
       if (window.__affProRunning) {
@@ -425,7 +425,7 @@ function generateTool() {
         if(x) x.innerText = t;
       }
 
-      // --- NATIVE ZIP ENGINE FIXED (Presisi 100%) ---
+      // --- NATIVE ZIP ENGINE FIXED ---
       function crc32(data) {
         var c = ~0;
         for (var i = 0; i < data.length; i++) {
@@ -517,29 +517,12 @@ function generateTool() {
       }
       // --- NATIVE ZIP ENGINE END ---
 
-      async function scrollPage() {
-        upd(10, 'Memuat SEMUA produk (Auto-Scroll)...');
-        var lastH = 0, stable = 0;
-        while(stable < 5) {
-          window.scrollBy(0, 1500);
-          await new Promise(r => setTimeout(r, 800));
-          if (document.body.scrollHeight === lastH) stable++;
-          else { stable = 0; lastH = document.body.scrollHeight; }
-        }
-        window.scrollTo(0, 0);
-      }
-
-      async function run() {
-        await scrollPage();
-
-        upd(30, 'Memindai SEMUA produk di toko...');
-        var items = document.querySelectorAll('a[href*="-i."]');
-        var products = [], seen = {};
-        
-        items.forEach(function(a) {
+      // --- LOGIKA LOOP SEMUA KATEGORI ---
+      function scrapeProducts(allProducts) {
+        var count = 0;
+        document.querySelectorAll('a[href*="-i."]').forEach(function(a) {
           var link = a.href.split('?')[0];
-          if (seen[link]) return;
-          seen[link] = true;
+          if (allProducts[link]) return;
           
           var img = a.querySelector('img');
           var src = img ? img.src : '';
@@ -550,8 +533,58 @@ function generateTool() {
               if (m) src = m[1];
             }
           }
-          if (src) products.push({ link: link, img: src });
+          if (src) {
+            allProducts[link] = { link: link, img: src };
+            count++;
+          }
         });
+        return count;
+      }
+
+      async function scrollPage() {
+        var lastH = 0, stable = 0;
+        while(stable < 3) {
+          window.scrollBy(0, 1500);
+          await new Promise(r => setTimeout(r, 800));
+          if (document.body.scrollHeight === lastH) stable++;
+          else { stable = 0; lastH = document.body.scrollHeight; }
+        }
+      }
+
+      async function run() {
+        var allProducts = {};
+        var totalScraped = 0;
+
+        // Cari semua tombol/kategori di sidebar (yang mengandung categoryId tapi BUKAN produk)
+        var catLinks = Array.from(document.querySelectorAll('a[href*="categoryId"]')).filter(a => !a.href.includes('-i.'));
+        var uniqueCats = [];
+        var seenCats = {};
+        catLinks.forEach(function(c) {
+            if(!seenCats[c.href]) { seenCats[c.href] = true; uniqueCats.push(c); }
+        });
+
+        if(uniqueCats.length > 0) {
+            upd(5, 'Ditemukan ' + uniqueCats.length + ' kategori. Memproses...');
+            for(var i=0; i<uniqueCats.length; i++) {
+                try {
+                    uniqueCats[i].click(); // Klik kategori via SPA (tidak reload halaman)
+                    await new Promise(r => setTimeout(r, 2000)); // Tunggu React render produk
+                } catch(e) {}
+                
+                upd(10 + Math.round((i / uniqueCats.length) * 20), 'Memuat Kategori ' + (i+1) + '/' + uniqueCats.length);
+                await scrollPage();
+                var cnt = scrapeProducts(allProducts);
+                totalScraped += cnt;
+                upd(30, 'Total Terambil: ' + totalScraped + ' produk');
+            }
+        } else {
+            upd(10, 'Tidak ada kategori terpisah, memuat semua produk...');
+            await scrollPage();
+            totalScraped = scrapeProducts(allProducts);
+        }
+        
+        window.scrollTo(0, 0);
+        var products = Object.values(allProducts);
 
         if (products.length === 0) {
           alert('Tidak ada produk ditemukan setelah discan.');
@@ -560,7 +593,7 @@ function generateTool() {
           return;
         }
 
-        upd(40, products.length + ' produk ditemukan! Mengunduh gambar PNG...');
+        upd(40, 'Mengunduh ' + products.length + ' gambar PNG...');
         var files = [];
         
         for (var i = 0; i < products.length; i++) {
@@ -592,12 +625,12 @@ function generateTool() {
         var zipBlob = makeZip(files);
         var a = document.createElement('a');
         a.href = URL.createObjectURL(zipBlob);
-        a.download = 'Affiliate_Pro_Extract.zip';
+        a.download = 'Affiliate_Pro_All_Categories.zip';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
-        upd(100, 'Selesai! ' + files.length + ' produk dikemas ke ZIP.');
+        upd(100, 'Selesai! ' + files.length + ' produk dikemas.');
         setTimeout(function() { div.remove(); window.__affProRunning = false; }, 5000);
       }
 
